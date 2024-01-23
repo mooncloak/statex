@@ -1,0 +1,11 @@
+public abstract interface class com/mooncloak/kodetools/statex/StateContainer {
+	public static final field Companion Lcom/mooncloak/kodetools/statex/StateContainer$Companion;
+	public abstract fun getChanged ()Landroidx/compose/runtime/State;
+	public abstract fun getCurrent ()Landroidx/compose/runtime/State;
+	public abstract fun getFlow ()Lkotlinx/coroutines/flow/SharedFlow;
+	public abstract fun getInitial ()Landroidx/compose/runtime/State;
+}
+
+public final class com/mooncloak/kodetools/statex/StateContainer$Companion {
+}
+
