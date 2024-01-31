@@ -3,11 +3,13 @@ package com.mooncloak.kodetools.statex
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 /**
  * A default [MutableStateContainer] implementation.
@@ -36,11 +38,17 @@ internal class DefaultMutableStateContainer<T> internal constructor(
 
     private val mutex = Mutex(locked = false)
 
-    override suspend fun change(value: T) {
+    override suspend fun change(block: suspend (current: T) -> T) {
         mutex.withLock {
+            val value = block.invoke(current.value)
+
             if (value != current.value) {
-                mutableCurrent.value = value
-                mutableChanged.value = true
+                // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
+                withContext(Dispatchers.Main) {
+                    mutableCurrent.value = value
+                    mutableChanged.value = true
+                }
+
                 mutableFlow.value = value
             }
         }
@@ -48,9 +56,13 @@ internal class DefaultMutableStateContainer<T> internal constructor(
 
     override suspend fun reset(initialValue: T) {
         mutex.withLock {
-            mutableInitial.value = initialValue
-            mutableCurrent.value = initialValue
-            mutableChanged.value = false
+            // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
+            withContext(Dispatchers.Main) {
+                mutableInitial.value = initialValue
+                mutableCurrent.value = initialValue
+                mutableChanged.value = false
+            }
+
             mutableFlow.value = initialValue
         }
     }
@@ -77,5 +89,5 @@ internal class DefaultMutableStateContainer<T> internal constructor(
     }
 
     override fun toString(): String =
-        "DefaultMutableStateContainer(initial=$initial, current=$current, flow=$stream, changed=$changed)"
+        "DefaultMutableStateContainer(initial=$initial, current=$current, stream=$stream, changed=$changed)"
 }
