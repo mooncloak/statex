@@ -1,11 +1,53 @@
+public abstract interface class com/mooncloak/kodetools/statex/MutableStateContainer : com/mooncloak/kodetools/statex/StateContainer {
+	public static final field Companion Lcom/mooncloak/kodetools/statex/MutableStateContainer$Companion;
+	public abstract fun change (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/mooncloak/kodetools/statex/MutableStateContainer$Companion {
+}
+
+public final class com/mooncloak/kodetools/statex/MutableStateContainer$DefaultImpls {
+	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class com/mooncloak/kodetools/statex/PlatformViewModel {
+	public static final field $stable I
+}
+
 public abstract interface class com/mooncloak/kodetools/statex/StateContainer {
 	public static final field Companion Lcom/mooncloak/kodetools/statex/StateContainer$Companion;
 	public abstract fun getChanged ()Landroidx/compose/runtime/State;
 	public abstract fun getCurrent ()Landroidx/compose/runtime/State;
-	public abstract fun getFlow ()Lkotlinx/coroutines/flow/SharedFlow;
 	public abstract fun getInitial ()Landroidx/compose/runtime/State;
+	public abstract fun getStream ()Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class com/mooncloak/kodetools/statex/StateContainer$Companion {
+}
+
+public final class com/mooncloak/kodetools/statex/StateContainerKt {
+	public static final fun change (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun mutableStateContainerOf (Ljava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
+}
+
+public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/kodetools/statex/PlatformViewModel {
+	public static final field $stable I
+	public static final field Companion Lcom/mooncloak/kodetools/statex/ViewModel$Companion;
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun bind ()V
+	protected final fun emit (Ljava/lang/Object;)V
+	protected final fun emit (Lkotlin/jvm/functions/Function1;)V
+	protected final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getState ()Lcom/mooncloak/kodetools/statex/StateContainer;
+	public final fun isBound ()Z
+	protected fun onBind ()V
+	protected fun onUnbind ()V
+	protected final fun reset (Ljava/lang/Object;)V
+	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/ViewModel;Ljava/lang/Object;ILjava/lang/Object;)V
+	public final fun unbind ()V
+}
+
+public final class com/mooncloak/kodetools/statex/ViewModel$Companion {
 }
 

@@ -69,6 +69,12 @@ kotlin {
             }
         }
 
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidX.lifecycle.viewModelKtx)
+            }
+        }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
