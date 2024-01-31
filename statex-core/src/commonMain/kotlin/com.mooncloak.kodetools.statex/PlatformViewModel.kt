@@ -7,4 +7,4 @@ package com.mooncloak.kodetools.statex
  * Android development. Therefore, the Android implementation of this component inherits from the
  * `androidx.lifecycle.ViewModel` component.
  */
-internal expect abstract class PlatformViewModel internal constructor()
+expect abstract class PlatformViewModel internal constructor()
