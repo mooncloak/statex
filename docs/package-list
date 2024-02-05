@@ -16,9 +16,12 @@ $dokka.location:com.mooncloak.kodetools.statex/StateContainer/initial/#/Pointing
 $dokka.location:com.mooncloak.kodetools.statex/StateContainer/stream/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-state-container/stream.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel.Companion///PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/-companion/index.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel///PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/index.md
-$dokka.location:com.mooncloak.kodetools.statex/ViewModel/ViewModel/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/-view-model.md
+$dokka.location:com.mooncloak.kodetools.statex/ViewModel/ViewModel/#TypeParam(bounds=[kotlin.Any?])#kotlin.Boolean/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/-view-model.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/bind/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/bind.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/isBound/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/is-bound.md
+$dokka.location:com.mooncloak.kodetools.statex/ViewModel/onAbandoned/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/on-abandoned.md
+$dokka.location:com.mooncloak.kodetools.statex/ViewModel/onForgotten/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/on-forgotten.md
+$dokka.location:com.mooncloak.kodetools.statex/ViewModel/onRemembered/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/on-remembered.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/state/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/state.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/unbind/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/unbind.md
 module:statex-core

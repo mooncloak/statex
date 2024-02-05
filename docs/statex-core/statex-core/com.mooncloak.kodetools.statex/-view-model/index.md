@@ -2,7 +2,7 @@
 
 # ViewModel
 
-abstract class [ViewModel](index.md)&lt;[T](index.md)&gt;(initialStateValue: [T](index.md)) : [PlatformViewModel](../-platform-view-model/index.md)
+abstract class [ViewModel](index.md)&lt;[T](index.md)&gt;(initialStateValue: [T](index.md), bindOnRemember: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true) : [PlatformViewModel](../-platform-view-model/index.md), [RememberObserver](https://developer.android.com/reference/kotlin/androidx/compose/runtime/RememberObserver.html)
 
 A design pattern level component that encapsulates state management and application logic for a user interface component or concept, such as a screen within an application. A [ViewModel](index.md) follows the uni-directional data flow (UDF) approach recommended by the Jetpack Compose documentation.
 
@@ -10,7 +10,7 @@ A [ViewModel](index.md) exposes a single [StateContainer](../-state-container/in
 
 Functions within a [ViewModel](index.md) should handle performing application logic, coordinating and invoking business logic, mapping to the appropriate models, and emitting the updated state values as a result of those changes. Publicly exposed functions will be invoked from the user interface components as a result of some action (ex: user interaction). It is recommended to keep these functions as non-suspending functions, as a [ViewModel](index.md) contains its own lifecycle and has a [coroutineScope](../../../../statex-core/com.mooncloak.kodetools.statex/-view-model/coroutine-scope.md) that can be used to launch coroutines internally. This removes the need for the call-site to have to wrap the function invocations in a coroutine scope themselves.
 
-!Note A [ViewModel](index.md) has its own lifecycle and must be bound to the user interface component (ex: `@Composable` function, View, etc.) for it to work correctly.
+!Note A [ViewModel](index.md) has its own lifecycle and must be bound to the user interface component (ex: `@Composable` function, View, etc.) for it to work correctly. By default, a [ViewModel](index.md) is bound to the remember lifecycle since it implements the [RememberObserver](https://developer.android.com/reference/kotlin/androidx/compose/runtime/RememberObserver.html) interface. If this behavior is not desired, simply pass `bindOnRemember=false` to the [ViewModel](index.md) constructor.
 
 ##  Example Usage
 
@@ -41,7 +41,7 @@ common
 
 | | |
 |---|---|
-| [ViewModel](-view-model.md) | [common]<br>constructor(initialStateValue: [T](index.md)) |
+| [ViewModel](-view-model.md) | [common]<br>constructor(initialStateValue: [T](index.md), bindOnRemember: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true) |
 
 ## Types
 
@@ -54,6 +54,9 @@ common
 | Name | Summary |
 |---|---|
 | [bind](bind.md) | [common]<br>fun [bind](bind.md)() |
+| [onAbandoned](on-abandoned.md) | [common]<br>open override fun [onAbandoned](on-abandoned.md)() |
+| [onForgotten](on-forgotten.md) | [common]<br>open override fun [onForgotten](on-forgotten.md)() |
+| [onRemembered](on-remembered.md) | [common]<br>open override fun [onRemembered](on-remembered.md)() |
 | [unbind](unbind.md) | [common]<br>fun [unbind](unbind.md)() |
 
 ## Properties

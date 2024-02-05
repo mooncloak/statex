@@ -3,7 +3,7 @@
 # ViewModel
 
 [common]\
-constructor(initialStateValue: [T](index.md))
+constructor(initialStateValue: [T](index.md), bindOnRemember: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true)
 
 #### Parameters
 
