@@ -1,5 +1,8 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.mooncloak.kodetools.statex
 
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.State
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -22,7 +25,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * > [!Note]
  * > A [ViewModel] has its own lifecycle and must be bound to the user interface component (ex: `@Composable` function,
- * > View, etc.) for it to work correctly.
+ * > View, etc.) for it to work correctly. By default, a [ViewModel] is bound to the [remember] lifecycle since it
+ * > implements the [RememberObserver] interface. If this behavior is not desired, simply pass `bindOnRemember=false`
+ * > to the [ViewModel] constructor.
  *
  * ## Example Usage
  *
@@ -45,8 +50,10 @@ import kotlin.coroutines.CoroutineContext
  * the [StateContainer] instance for the [state] property.
  */
 abstract class ViewModel<T>(
-    initialStateValue: T
-) : PlatformViewModel() {
+    initialStateValue: T,
+    private val bindOnRemember: Boolean = true
+) : PlatformViewModel(),
+    RememberObserver {
 
     var isBound = false
         internal set
@@ -90,6 +97,24 @@ abstract class ViewModel<T>(
     private lateinit var job: Job
 
     private val mutableStateContainer = mutableStateContainerOf(initialStateValue)
+
+    override fun onRemembered() {
+        if (bindOnRemember) {
+            bind()
+        }
+    }
+
+    override fun onForgotten() {
+        if (bindOnRemember) {
+            unbind()
+        }
+    }
+
+    override fun onAbandoned() {
+        if (bindOnRemember) {
+            unbind()
+        }
+    }
 
     fun bind() {
         if (!isBound) {
