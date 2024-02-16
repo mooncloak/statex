@@ -145,7 +145,7 @@ abstract class ViewModel<T>(
     protected open fun onUnbind() {}
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun emit(block: (current: T) -> T) {
+    protected fun emit(block: suspend (current: T) -> T) {
         coroutineScope.launch {
             mutableStateContainer.change(block = block)
         }
