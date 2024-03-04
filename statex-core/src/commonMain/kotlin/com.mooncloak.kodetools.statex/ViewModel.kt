@@ -147,21 +147,27 @@ abstract class ViewModel<T>(
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun emit(block: suspend (current: T) -> T) {
         coroutineScope.launch {
-            mutableStateContainer.change(block = block)
+            withContext(Dispatchers.Main) {
+                mutableStateContainer.change(block = block)
+            }
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun emit(value: T) {
         coroutineScope.launch {
-            mutableStateContainer.change(value = value)
+            withContext(Dispatchers.Main) {
+                mutableStateContainer.change(value = value)
+            }
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun reset(initialValue: T = this.state.initial.value) {
         coroutineScope.launch {
-            mutableStateContainer.reset(initialValue = initialValue)
+            withContext(Dispatchers.Main) {
+                mutableStateContainer.reset(initialValue = initialValue)
+            }
         }
     }
 
