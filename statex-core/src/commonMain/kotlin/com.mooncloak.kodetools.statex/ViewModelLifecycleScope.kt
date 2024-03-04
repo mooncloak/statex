@@ -10,7 +10,7 @@ import androidx.compose.runtime.State
  * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
  */
 @Stable
-interface ViewModelLifecycleScope {
+sealed interface ViewModelLifecycleScope {
 
     /**
      * A [State] determining whether the [ViewModel] component containing this lifecycle, is
