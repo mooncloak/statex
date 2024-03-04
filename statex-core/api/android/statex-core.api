@@ -31,17 +31,17 @@ public final class com/mooncloak/kodetools/statex/StateContainerKt {
 	public static final fun mutableStateContainerOf (Ljava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
 }
 
-public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/kodetools/statex/PlatformViewModel, androidx/compose/runtime/RememberObserver {
+public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/kodetools/statex/PlatformViewModel, androidx/compose/runtime/RememberObserver, com/mooncloak/kodetools/statex/ViewModelLifecycleScope {
 	public static final field $stable I
 	public static final field Companion Lcom/mooncloak/kodetools/statex/ViewModel$Companion;
 	public fun <init> (Ljava/lang/Object;Z)V
 	public synthetic fun <init> (Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun bind ()V
+	public fun bind ()V
 	protected final fun emit (Ljava/lang/Object;)V
 	protected final fun emit (Lkotlin/jvm/functions/Function2;)V
 	protected final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getState ()Lcom/mooncloak/kodetools/statex/StateContainer;
-	public final fun isBound ()Z
+	public fun isBound ()Landroidx/compose/runtime/State;
 	public fun onAbandoned ()V
 	protected fun onBind ()V
 	public fun onForgotten ()V
@@ -49,9 +49,15 @@ public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/k
 	protected fun onUnbind ()V
 	protected final fun reset (Ljava/lang/Object;)V
 	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/ViewModel;Ljava/lang/Object;ILjava/lang/Object;)V
-	public final fun unbind ()V
+	public fun unbind ()V
 }
 
 public final class com/mooncloak/kodetools/statex/ViewModel$Companion {
+}
+
+public abstract interface class com/mooncloak/kodetools/statex/ViewModelLifecycleScope {
+	public abstract fun bind ()V
+	public abstract fun isBound ()Landroidx/compose/runtime/State;
+	public abstract fun unbind ()V
 }
 

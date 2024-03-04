@@ -8,7 +8,9 @@ interface [StateContainer](index.md)&lt;[T](index.md)&gt;
 
 A generic container around [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) values for a component. This encapsulates the [current](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) value, while retaining the [initial](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) value, and providing means to listen to state changes outside of Jetpack Compose components (Kotlinx Coroutines Flow).
 
-Instead of using a [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) directly, one could use the [StateContainer](index.md) and [MutableStateContainer](../-mutable-state-container/index.md) components to encapsulate additional state, and handle mutations to the underlying value in a concurrency-safe manner.
+Instead of using a [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) directly, one could use the [StateContainer](index.md) and [MutableStateContainer](../-mutable-state-container/index.md) components to encapsulate additional associated state, and handle mutations to the underlying value in a concurrency-safe manner.
+
+!Note Implementations of this interface must guarantee conformance to the [Stable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html) annotation requirements.
 
 #### See also
 

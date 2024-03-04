@@ -3,4 +3,6 @@
 # bind
 
 [common]\
-fun [bind](bind.md)()
+open override fun [bind](bind.md)()
+
+Bind this [ViewModel](index.md) to the scope of the calling containing component. If the [ViewModel](index.md) with this [ViewModelLifecycleScope](../-view-model-lifecycle-scope/index.md) is already bound, then this function will do nothing.

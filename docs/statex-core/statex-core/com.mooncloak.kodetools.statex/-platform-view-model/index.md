@@ -16,4 +16,4 @@ An internal base &quot;ViewModel&quot; component that delegates to any such plat
 
 | Name | Summary |
 |---|---|
-| [addCloseable](index.md#264516373%2FFunctions%2F596112941) | [android]<br>open fun [addCloseable](index.md#264516373%2FFunctions%2F596112941)(@[NonNull](https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html)p0: [Closeable](https://developer.android.com/reference/kotlin/java/io/Closeable.html)) |
+| [addCloseable](index.md#264516373%2FFunctions%2F596112941) | [android]<br>open fun [addCloseable](index.md#264516373%2FFunctions%2F596112941)(@[NonNull](https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html)p0: [Closeable](https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html)) |
