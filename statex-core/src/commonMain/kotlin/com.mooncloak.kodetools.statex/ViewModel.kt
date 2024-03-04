@@ -104,7 +104,11 @@ abstract class ViewModel<T>(
 
     private val mutableIsBound = mutableStateOf(false)
 
-    private val mutex = Mutex(locked = false)
+    // The Mutex for all operations to ensure that they are all concurrency-safe. The Mutex is
+    // initially locked until the lifecycle is bound, to prevent mutation operations from occurring
+    // while the ViewModel is not bound and causing exceptions to be thrown or other undefined
+    // behavior.
+    private val mutex = Mutex(locked = true)
 
     override fun onRemembered() {
         if (bindOnRemember) {
@@ -126,14 +130,25 @@ abstract class ViewModel<T>(
 
     override fun bind() {
         if (!isBound.value) {
+            // Prevent any operations from being invoked while we are binding. Once, we are finished
+            // binding, we can unlock and allow any operations to occur.
+            mutex.tryLock()
+
             if (::job.isInitialized && job.isActive) {
-                // Cancel any existing job. The job should be properly cancelled in the unbind function,
-                // but if for some reason, it didn't get cancelled, make sure we cancel it here.
+                // Cancel any existing job. The job should be properly cancelled in the unbind
+                // function, but if for some reason, it didn't get cancelled, make sure we cancel
+                // it here.
                 job.cancel("Creating new Job in ${ViewModel::class.simpleName} ${ViewModel<*>::bind::name} function.")
             }
 
             job = SupervisorJob()
+
+            // Unlock the Mutex so that other operations can be performed, now that this ViewModel
+            // is bound to a lifecycle.
+            mutex.unlock()
+
             mutableIsBound.value = true
+
             onBind()
         }
     }
@@ -141,7 +156,13 @@ abstract class ViewModel<T>(
     override fun unbind() {
         if (isBound.value) {
             onUnbind()
+
             job.cancel()
+
+            // Lock the Mutex so that mutation operations are not performed while this component is
+            // not bound.
+            mutex.tryLock()
+
             mutableIsBound.value = false
         }
     }
