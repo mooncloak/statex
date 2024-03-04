@@ -4,6 +4,7 @@ package com.mooncloak.kodetools.statex
 
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -55,10 +56,11 @@ abstract class ViewModel<T>(
     initialStateValue: T,
     private val bindOnRemember: Boolean = true
 ) : PlatformViewModel(),
+    ViewModelLifecycleScope,
     RememberObserver {
 
-    var isBound = false
-        internal set
+    override val isBound: State<Boolean>
+        get() = mutableIsBound
 
     /**
      * Provides access to the read-only [StateContainer] values. [ViewModel] implementations can mutate the wrapped
@@ -100,6 +102,8 @@ abstract class ViewModel<T>(
 
     private val mutableStateContainer = mutableStateContainerOf(initialStateValue)
 
+    private val mutableIsBound = mutableStateOf(false)
+
     private val mutex = Mutex(locked = false)
 
     override fun onRemembered() {
@@ -120,19 +124,19 @@ abstract class ViewModel<T>(
         }
     }
 
-    fun bind() {
-        if (!isBound) {
+    override fun bind() {
+        if (!isBound.value) {
             job = SupervisorJob()
-            isBound = true
+            mutableIsBound.value = true
             onBind()
         }
     }
 
-    fun unbind() {
-        if (isBound) {
+    override fun unbind() {
+        if (isBound.value) {
             onUnbind()
             job.cancel()
-            isBound = false
+            mutableIsBound.value = false
         }
     }
 
