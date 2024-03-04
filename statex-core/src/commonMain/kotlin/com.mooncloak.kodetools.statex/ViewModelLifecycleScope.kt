@@ -1,10 +1,15 @@
 package com.mooncloak.kodetools.statex
 
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 
 /**
  * Defines the lifecycle for a [ViewModel].
+ *
+ * > [!Note]
+ * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
  */
+@Stable
 interface ViewModelLifecycleScope {
 
     /**

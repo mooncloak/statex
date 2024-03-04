@@ -3,6 +3,7 @@
 package com.mooncloak.kodetools.statex
 
 import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.*
@@ -32,6 +33,9 @@ import kotlin.coroutines.CoroutineContext
  * > implements the [RememberObserver] interface. If this behavior is not desired, simply pass `bindOnRemember=false`
  * > to the [ViewModel] constructor.
  *
+ * > [!Note]
+ * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
+ *
  * ## Example Usage
  *
  * ```kotlin
@@ -52,6 +56,7 @@ import kotlin.coroutines.CoroutineContext
  * @param [initialStateValue] The initial value to provide to the [mutableStateContainer] function when constructing
  * the [StateContainer] instance for the [state] property.
  */
+@Stable
 abstract class ViewModel<T>(
     initialStateValue: T,
     private val bindOnRemember: Boolean = true
