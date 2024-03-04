@@ -126,6 +126,12 @@ abstract class ViewModel<T>(
 
     override fun bind() {
         if (!isBound.value) {
+            if (::job.isInitialized && job.isActive) {
+                // Cancel any existing job. The job should be properly cancelled in the unbind function,
+                // but if for some reason, it didn't get cancelled, make sure we cancel it here.
+                job.cancel("Creating new Job in ${ViewModel::class.simpleName} ${ViewModel<*>::bind::name} function.")
+            }
+
             job = SupervisorJob()
             mutableIsBound.value = true
             onBind()
