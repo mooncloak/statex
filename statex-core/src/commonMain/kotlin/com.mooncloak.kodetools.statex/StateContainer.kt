@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.*
  * components (Kotlinx Coroutines [Flow]).
  *
  * Instead of using a [State] directly, one could use the [StateContainer] and [MutableStateContainer] components to
- * encapsulate additional state, and handle mutations to the underlying value in a concurrency-safe manner.
+ * encapsulate additional associated state, and handle mutations to the underlying value in a concurrency-safe manner.
+ *
+ * > [!Note]
+ * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
  *
  * @see [MutableStateContainer] for a mutable version of this [StateContainer] interface.
  * @see [mutableStateContainerOf] To create a [MutableStateContainer] instance.
@@ -95,6 +98,9 @@ interface StateContainer<T> {
 /**
  * A [StateContainer] that provides the ability to mutate the wrapped state values. All mutable operations should be
  * considered thread-safe and safe to access concurrently.
+ *
+ * > [!Note]
+ * > Implementations of this interface must perform mutation operations in a concurrency-safe manner.
  *
  * @see [mutableStateContainerOf] To create an instance of this interface.
  */
