@@ -5,6 +5,8 @@ package com.mooncloak.kodetools.statex
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.State
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -98,6 +100,8 @@ abstract class ViewModel<T>(
 
     private val mutableStateContainer = mutableStateContainerOf(initialStateValue)
 
+    private val mutex = Mutex(locked = false)
+
     override fun onRemembered() {
         if (bindOnRemember) {
             bind()
@@ -147,8 +151,10 @@ abstract class ViewModel<T>(
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun emit(block: suspend (current: T) -> T) {
         coroutineScope.launch {
-            withContext(Dispatchers.Main) {
-                mutableStateContainer.change(block = block)
+            mutex.withLock {
+                withContext(Dispatchers.Main) {
+                    mutableStateContainer.change(block = block)
+                }
             }
         }
     }
@@ -156,8 +162,10 @@ abstract class ViewModel<T>(
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun emit(value: T) {
         coroutineScope.launch {
-            withContext(Dispatchers.Main) {
-                mutableStateContainer.change(value = value)
+            mutex.withLock {
+                withContext(Dispatchers.Main) {
+                    mutableStateContainer.change(value = value)
+                }
             }
         }
     }
@@ -165,8 +173,10 @@ abstract class ViewModel<T>(
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun reset(initialValue: T = this.state.initial.value) {
         coroutineScope.launch {
-            withContext(Dispatchers.Main) {
-                mutableStateContainer.reset(initialValue = initialValue)
+            mutex.withLock {
+                withContext(Dispatchers.Main) {
+                    mutableStateContainer.reset(initialValue = initialValue)
+                }
             }
         }
     }
