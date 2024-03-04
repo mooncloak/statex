@@ -20,6 +20,8 @@ dependencyResolutionManagement {
 plugins {
     // See https://jmfayard.github.io/refreshVersions
     id("de.fayard.refreshVersions") version "0.60.3"
+////                            # available:"0.60.4"
+////                            # available:"0.60.5"
 
     // See build.gradle.kts file in root project folder for the rest of the plugins applied.
 }
