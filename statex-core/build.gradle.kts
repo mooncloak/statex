@@ -56,9 +56,7 @@ kotlin {
         macosArm64()
     }
 
-    if (isBuildingOnLinux()) {
-        linuxX64()
-    }
+    linuxX64()
 
     sourceSets {
         val commonMain by getting {
