@@ -4,7 +4,7 @@
 
 @[Stable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html)
 
-interface [ViewModelLifecycleScope](index.md)
+sealed interface [ViewModelLifecycleScope](index.md)
 
 Defines the lifecycle for a [ViewModel](../-view-model/index.md).
 
@@ -15,6 +15,12 @@ Defines the lifecycle for a [ViewModel](../-view-model/index.md).
 | |
 |---|
 | [ViewModel](../-view-model/index.md) |
+
+## Types
+
+| Name | Summary |
+|---|---|
+| [Companion](-companion/index.md) | [common]<br>object [Companion](-companion/index.md) |
 
 ## Properties
 

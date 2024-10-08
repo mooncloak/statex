@@ -9,7 +9,7 @@ A Flow of changes that occur to the [current](current.md) value over time. Whene
 
 !Note This is a &quot;hot&quot; flow, so changes can be emitted to it even when there are no subscribers. Since this is a StateFlow instance, it can be shared by multiple subscribers.
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 stateContainer.stream.onEach { ... }

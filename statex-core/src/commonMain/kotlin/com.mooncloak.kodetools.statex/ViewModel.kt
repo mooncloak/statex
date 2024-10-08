@@ -57,7 +57,7 @@ import kotlin.coroutines.CoroutineContext
  * the [StateContainer] instance for the [state] property.
  */
 @Stable
-abstract class ViewModel<T>(
+public abstract class ViewModel<T>(
     initialStateValue: T,
     private val bindOnRemember: Boolean = true
 ) : PlatformViewModel(),
@@ -90,7 +90,7 @@ abstract class ViewModel<T>(
      *
      * @see [StateContainer]
      */
-    val state: StateContainer<T>
+    public val state: StateContainer<T>
         get() = mutableStateContainer
 
     /**
@@ -217,5 +217,5 @@ abstract class ViewModel<T>(
         }
     }
 
-    companion object
+    public companion object
 }

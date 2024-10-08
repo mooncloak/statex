@@ -10,7 +10,7 @@ fun &lt;[T](mutable-state-container-of.md)&gt; [mutableStateContainerOf](mutable
 
 Creates a [MutableStateContainer](-mutable-state-container/index.md) with the provided [initialValue](mutable-state-container-of.md).
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 val stateContainer = mutableStateContainerOf(true)

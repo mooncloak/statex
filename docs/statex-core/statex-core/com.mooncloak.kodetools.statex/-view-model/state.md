@@ -7,7 +7,7 @@ val [state](state.md): [StateContainer](../-state-container/index.md)&lt;[T](ind
 
 Provides access to the read-only [StateContainer](../-state-container/index.md) values. [ViewModel](index.md) implementations can mutate the wrapped state by emitting new state values via the protected [emit](../../../../statex-core/com.mooncloak.kodetools.statex/-view-model/emit.md) and [reset](../../../../statex-core/com.mooncloak.kodetools.statex/-view-model/reset.md) functions.
 
-##  Example Usage:
+## Example Usage:
 
 ```kotlin
 @Composable

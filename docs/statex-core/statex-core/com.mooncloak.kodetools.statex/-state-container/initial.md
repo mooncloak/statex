@@ -9,7 +9,7 @@ The initial [State](https://developer.android.com/reference/kotlin/androidx/comp
 
 !Note That this is a Compose [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) value and will trigger recompositions of `@Composable` functions when used in the context of a `@Composable` function.
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 stateContainer.initial.value

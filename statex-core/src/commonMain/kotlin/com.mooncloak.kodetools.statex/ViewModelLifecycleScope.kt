@@ -10,7 +10,7 @@ import androidx.compose.runtime.State
  * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
  */
 @Stable
-sealed interface ViewModelLifecycleScope {
+public sealed interface ViewModelLifecycleScope {
 
     /**
      * A [State] determining whether the [ViewModel] component containing this lifecycle, is
@@ -19,18 +19,20 @@ sealed interface ViewModelLifecycleScope {
      * otherwise, no operations on the [ViewModel] should be invoked because they will not emit the
      * state values correctly to any subscribers.
      */
-    val isBound: State<Boolean>
+    public val isBound: State<Boolean>
 
     /**
      * Bind this [ViewModel] to the scope of the calling containing component. If the [ViewModel]
      * with this [ViewModelLifecycleScope] is already bound, then this function will do nothing.
      */
-    fun bind()
+    public fun bind()
 
     /**
      * Unbind this [ViewModel] from the scope of the calling containing component. If the
      * [ViewModel] with this [ViewModelLifecycleScope] is already not bound, then this function
      * will do nothing.
      */
-    fun unbind()
+    public fun unbind()
+
+    public companion object
 }

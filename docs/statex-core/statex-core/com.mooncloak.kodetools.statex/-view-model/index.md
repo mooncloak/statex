@@ -16,7 +16,7 @@ Functions within a [ViewModel](index.md) should handle performing application lo
 
 !Note Implementations of this interface must guarantee conformance to the [Stable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html) annotation requirements.
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 class FeedViewModel : ViewModel(initialStateValue = FeedStateModel()) {

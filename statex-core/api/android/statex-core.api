@@ -56,8 +56,12 @@ public final class com/mooncloak/kodetools/statex/ViewModel$Companion {
 }
 
 public abstract interface class com/mooncloak/kodetools/statex/ViewModelLifecycleScope {
+	public static final field Companion Lcom/mooncloak/kodetools/statex/ViewModelLifecycleScope$Companion;
 	public abstract fun bind ()V
 	public abstract fun isBound ()Landroidx/compose/runtime/State;
 	public abstract fun unbind ()V
+}
+
+public final class com/mooncloak/kodetools/statex/ViewModelLifecycleScope$Companion {
 }
 

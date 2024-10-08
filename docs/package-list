@@ -24,6 +24,7 @@ $dokka.location:com.mooncloak.kodetools.statex/ViewModel/onForgotten/#/PointingT
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/onRemembered/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/on-remembered.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/state/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/state.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModel/unbind/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model/unbind.md
+$dokka.location:com.mooncloak.kodetools.statex/ViewModelLifecycleScope.Companion///PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model-lifecycle-scope/-companion/index.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModelLifecycleScope///PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model-lifecycle-scope/index.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModelLifecycleScope/bind/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model-lifecycle-scope/bind.md
 $dokka.location:com.mooncloak.kodetools.statex/ViewModelLifecycleScope/isBound/#/PointingToDeclaration/statex-core/statex-core/com.mooncloak.kodetools.statex/-view-model-lifecycle-scope/is-bound.md

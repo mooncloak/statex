@@ -8,7 +8,7 @@ contact:
       website: "https://kodetools.mooncloak.codes"
 title: "statex"
 type: "software"
-abstract: "Compose multi-platform state extensions."
+abstract: "Compose multiplatform state extensions."
 license: "Apache-2.0"
 keywords:
     - "kotlin"

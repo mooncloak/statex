@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.*
  * @see [mutableStateContainerOf] To create a [MutableStateContainer] instance.
  */
 @Stable
-interface StateContainer<T> {
+public interface StateContainer<T> {
 
     /**
      * The initial [State] when this component was first created or when it was last reset. This value does not change
@@ -38,7 +38,7 @@ interface StateContainer<T> {
      *
      * @see [MutableStateContainer.reset] For a way of resetting this value.
      */
-    val initial: State<T>
+    public val initial: State<T>
 
     /**
      * The current [State] for this component. This value can change over time, so subsequent calls to access this
@@ -57,7 +57,7 @@ interface StateContainer<T> {
      * @see [MutableStateContainer.change] For a way of changing this value.
      * @see [MutableStateContainer.reset] For a way of resetting this value.
      */
-    val current: State<T>
+    public val current: State<T>
 
     /**
      * A [Flow] of changes that occur to the [current] value over time. Whenever the [current] [State] value changes,
@@ -75,7 +75,7 @@ interface StateContainer<T> {
      *                      .launchIn(coroutineScope)
      * ```
      */
-    val stream: StateFlow<T>
+    public val stream: StateFlow<T>
 
     /**
      * A [State] that determines whether the [current] value ever changed from the [initial] value. Once the [current]
@@ -90,9 +90,9 @@ interface StateContainer<T> {
      *
      * @see [MutableStateContainer.reset] To see how to reset a [MutableStateContainer] back to its initial state.
      */
-    val changed: State<Boolean>
+    public val changed: State<Boolean>
 
-    companion object
+    public companion object
 }
 
 /**
@@ -105,7 +105,7 @@ interface StateContainer<T> {
  * @see [mutableStateContainerOf] To create an instance of this interface.
  */
 @Stable
-interface MutableStateContainer<T> : StateContainer<T> {
+public interface MutableStateContainer<T> : StateContainer<T> {
 
     /**
      * Updates the [current] value to be the value obtained by invoking the provided [block] function. The [block]
@@ -134,7 +134,7 @@ interface MutableStateContainer<T> : StateContainer<T> {
      *
      * @param [block] The function that will be invoked to obtain the new [current] value.
      */
-    suspend fun change(block: suspend (current: T) -> T)
+    public suspend fun change(block: suspend (current: T) -> T)
 
     /**
      * Resets the state to the provided [initialValue]. This provides a way to override what the initial
@@ -161,9 +161,9 @@ interface MutableStateContainer<T> : StateContainer<T> {
      *
      * @param [initialValue] The value to set as the initial value. Defaults to [StateContainer.initial].
      */
-    suspend fun reset(initialValue: T = this.initial.value)
+    public suspend fun reset(initialValue: T = this.initial.value)
 
-    companion object
+    public companion object
 }
 
 /**
@@ -183,7 +183,7 @@ interface MutableStateContainer<T> : StateContainer<T> {
  *
  * @param [value] The value to change the [StateContainer.current] value to.
  */
-suspend fun <T> MutableStateContainer<T>.change(value: T) =
+public suspend fun <T> MutableStateContainer<T>.change(value: T): Unit =
     change { value }
 
 /**
@@ -207,5 +207,5 @@ suspend fun <T> MutableStateContainer<T>.change(value: T) =
  * ```
  */
 @Stable
-fun <T> mutableStateContainerOf(initialValue: T): MutableStateContainer<T> =
+public fun <T> mutableStateContainerOf(initialValue: T): MutableStateContainer<T> =
     DefaultMutableStateContainer(initialValue = initialValue)

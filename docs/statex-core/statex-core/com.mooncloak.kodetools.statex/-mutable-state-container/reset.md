@@ -11,7 +11,7 @@ Resets the state to the provided [initialValue](reset.md). This provides a way t
 
 !Note All write operations for a [MutableStateContainer](index.md) are safe to access concurrently. This means that if another mutation is currently running while this function is invoked, then this function will suspend until that function has finished.
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 // Reset back to the initial value when creating this StateContainer instance.

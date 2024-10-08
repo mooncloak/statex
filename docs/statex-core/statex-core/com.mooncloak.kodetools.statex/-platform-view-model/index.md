@@ -16,4 +16,5 @@ An internal base &quot;ViewModel&quot; component that delegates to any such plat
 
 | Name | Summary |
 |---|---|
-| [addCloseable](index.md#264516373%2FFunctions%2F596112941) | [android]<br>open fun [addCloseable](index.md#264516373%2FFunctions%2F596112941)(@[NonNull](https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html)p0: [Closeable](https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html)) |
+| [addCloseable](index.md#383812252%2FFunctions%2F596112941) | [android]<br>open fun [addCloseable](index.md#383812252%2FFunctions%2F596112941)(closeable: [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html))<br>fun [addCloseable](index.md#1722490497%2FFunctions%2F596112941)(key: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), closeable: [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html)) |
+| [getCloseable](index.md#1102255800%2FFunctions%2F596112941) | [android]<br>fun &lt;[T](index.md#1102255800%2FFunctions%2F596112941) : [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html)&gt; [getCloseable](index.md#1102255800%2FFunctions%2F596112941)(key: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [T](index.md#1102255800%2FFunctions%2F596112941)? |

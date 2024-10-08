@@ -11,7 +11,7 @@ The provided [block](change.md) function is provided the [current](../../../../s
 
 !Note All write operations for a [MutableStateContainer](index.md) are safe to access concurrently. This means that if another mutation is currently running while this function is invoked, then this function will suspend until that function has finished.
 
-##  Example Usage
+## Example Usage
 
 ```kotlin
 stateContainer.change { current ->
