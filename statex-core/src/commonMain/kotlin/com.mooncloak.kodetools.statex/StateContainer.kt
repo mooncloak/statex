@@ -198,7 +198,9 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      *
      * @param [block] The function that will be invoked to obtain the new [current] value.
      */
-    public suspend fun update(block: suspend (current: T) -> T)
+    @Suppress("DEPRECATION")
+    public suspend fun update(block: suspend (current: T) -> T): Unit =
+        change(block)
 
     /**
      * Resets the state to the provided [initialValue]. This provides a way to override what the initial
