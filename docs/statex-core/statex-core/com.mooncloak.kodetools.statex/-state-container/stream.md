@@ -3,7 +3,24 @@
 # stream
 
 [common]\
-abstract val [stream](stream.md): StateFlow&lt;[T](index.md)&gt;
+abstract val [~~stream~~](stream.md): StateFlow&lt;[T](index.md)&gt;
+
+---
+
+### Deprecated
+
+The 'stream' property was renamed to 'flow'.
+
+#### Replace with
+
+```kotlin
+import com.mooncloak.kodetools.statex.StateContainer
+
+```
+```kotlin
+flow
+```
+---
 
 A Flow of changes that occur to the [current](current.md) value over time. Whenever the [current](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html) value changes, that new value is emitted through this Flow. This is a StateFlow which means that it can retain the last emitted value which can be accessed like so: `container.stream.value`.
 

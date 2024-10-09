@@ -3,7 +3,24 @@
 # change
 
 [common]\
-suspend fun &lt;[T](change.md)&gt; [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](change.md)&gt;.[change](change.md)(value: [T](change.md))
+suspend fun &lt;[T](change.md)&gt; [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](change.md)&gt;.[~~change~~](change.md)(value: [T](change.md))
+
+---
+
+### Deprecated
+
+The 'change' function was renamed to 'update'.
+
+#### Replace with
+
+```kotlin
+import com.mooncloak.kodetools.statex.MutableStateContainer.update
+
+```
+```kotlin
+update
+```
+---
 
 Updates the [StateContainer.current](-state-container/current.md) value to be the provided [value](change.md). This is a convenience function that delegates to the [MutableStateContainer.change](-mutable-state-container/change.md) by providing a higher-order function that simply returns the provided [value](change.md).
 
