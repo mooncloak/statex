@@ -15,6 +15,7 @@ import kotlinx.serialization.serializer
 /**
  * An abstraction around a persistent key-value storage.
  */
+@ExperimentalPersistentStateAPI
 public interface PersistentStorage {
 
     public fun <T> get(
@@ -34,6 +35,7 @@ public interface PersistentStorage {
     public companion object
 }
 
+@ExperimentalPersistentStateAPI
 public inline fun <reified T> PersistentStorage.get(
     key: String,
     defaultValue: T,
@@ -45,6 +47,7 @@ public inline fun <reified T> PersistentStorage.get(
     serializer = serializersModule.serializer()
 )
 
+@ExperimentalPersistentStateAPI
 public suspend inline fun <reified T> PersistentStorage.set(
     key: String,
     value: T,
@@ -61,9 +64,11 @@ public suspend inline fun <reified T> PersistentStorage.set(
 /**
  * Retrieves the current platform's default [PersistentStorage] instance.
  */
+@ExperimentalPersistentStateAPI
 @PublishedApi
 internal expect fun PersistentStorage.Companion.platformDefault(): PersistentStorage
 
+@ExperimentalPersistentStateAPI
 @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
 internal class SettingsPersistentStorage internal constructor(
     private val settings: Settings

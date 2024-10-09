@@ -5,6 +5,7 @@ import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.StringFormat
 
+@ExperimentalPersistentStateAPI
 public fun <T> stateContainerSnapshotSaver(
     format: StringFormat,
     serializer: KSerializer<T>
@@ -13,6 +14,7 @@ public fun <T> stateContainerSnapshotSaver(
     serializer = StateContainer.SnapshotStateModel.serializer(serializer)
 )
 
+@ExperimentalPersistentStateAPI
 public fun <T> stateContainerSnapshotSaver(
     format: BinaryFormat,
     serializer: KSerializer<T>
@@ -21,6 +23,7 @@ public fun <T> stateContainerSnapshotSaver(
     serializer = StateContainer.SnapshotStateModel.serializer(serializer)
 )
 
+@ExperimentalPersistentStateAPI
 public fun <T> stateContainerSnapshotSaverAsBinaryHexString(
     format: BinaryFormat,
     serializer: KSerializer<T>

@@ -9,6 +9,7 @@ import kotlinx.serialization.StringFormat
 import kotlinx.serialization.decodeFromHexString
 import kotlinx.serialization.encodeToHexString
 
+@ExperimentalPersistentStateAPI
 public interface SerialFormatSaver<Original, Saveable : Any> : Saver<Original, Saveable> {
 
     public val format: SerialFormat
@@ -16,6 +17,7 @@ public interface SerialFormatSaver<Original, Saveable : Any> : Saver<Original, S
     public companion object
 }
 
+@ExperimentalPersistentStateAPI
 public class StringFormatSaver<Value> public constructor(
     override val format: StringFormat,
     private val serializer: KSerializer<Value>
@@ -34,6 +36,7 @@ public class StringFormatSaver<Value> public constructor(
         )
 }
 
+@ExperimentalPersistentStateAPI
 public class BinaryFormatByteArraySaver<Value> public constructor(
     override val format: BinaryFormat,
     private val serializer: KSerializer<Value>
@@ -52,6 +55,7 @@ public class BinaryFormatByteArraySaver<Value> public constructor(
         )
 }
 
+@ExperimentalPersistentStateAPI
 public class BinaryFormatHexStringSaver<Value> public constructor(
     override val format: BinaryFormat,
     private val serializer: KSerializer<Value>

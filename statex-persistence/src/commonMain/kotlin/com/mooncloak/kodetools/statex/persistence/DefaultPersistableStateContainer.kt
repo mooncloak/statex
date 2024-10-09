@@ -17,6 +17,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
 @Stable
+@ExperimentalPersistentStateAPI
 public class DefaultPersistableStateContainer<T> @PublishedApi internal constructor(
     defaultValue: T,
     private val storage: PersistentStorage,

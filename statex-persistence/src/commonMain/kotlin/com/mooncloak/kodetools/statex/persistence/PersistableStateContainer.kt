@@ -11,6 +11,7 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 
+@ExperimentalPersistentStateAPI
 public interface PersistableStateContainer<T> : MutableStateContainer<T> {
 
     public companion object
@@ -53,6 +54,7 @@ public interface PersistableStateContainer<T> : MutableStateContainer<T> {
  * ```
  */
 @Stable
+@ExperimentalPersistentStateAPI
 public inline fun <reified T> persistableStateContainerOf(
     key: String,
     defaultValue: T,
