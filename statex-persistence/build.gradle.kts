@@ -31,6 +31,37 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
+            }
+        }
+
+        val wasmJsMain by getting {
+            dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
+            }
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
+            }
+        }
+
+        val appleMain by getting {
+            dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
+            }
+        }
+
+        val mingwMain by getting {
+            dependencies {
+                implementation(RussHWolf.multiplatformSettings.noArg)
             }
         }
 
