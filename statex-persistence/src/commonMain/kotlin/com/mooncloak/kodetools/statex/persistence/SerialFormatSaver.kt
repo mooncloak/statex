@@ -1,4 +1,4 @@
-package com.mooncloak.kodetools.statex.persisted
+package com.mooncloak.kodetools.statex.persistence
 
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope

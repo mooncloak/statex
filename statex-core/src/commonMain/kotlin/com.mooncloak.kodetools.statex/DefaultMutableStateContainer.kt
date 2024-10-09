@@ -1,5 +1,6 @@
 package com.mooncloak.kodetools.statex
 
+import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -15,8 +16,11 @@ import kotlinx.coroutines.withContext
  * A default [MutableStateContainer] implementation.
  */
 @Stable
-internal class DefaultMutableStateContainer<T> internal constructor(
-    initialValue: T
+public class DefaultMutableStateContainer<T> internal constructor(
+    initialValue: T,
+    currentValue: T = initialValue,
+    changed: Boolean = false,
+    public val policy: SnapshotMutationPolicy<T>
 ) : MutableStateContainer<T> {
 
     override val initial: State<T>
@@ -32,12 +36,21 @@ internal class DefaultMutableStateContainer<T> internal constructor(
     override val changed: State<Boolean>
         get() = mutableChanged
 
-    private val mutableInitial = mutableStateOf(initialValue)
-    private val mutableCurrent = mutableStateOf(initialValue)
-    private val mutableChanged = mutableStateOf(false)
+    private val mutableInitial = mutableStateOf(initialValue, policy)
+    private val mutableCurrent = mutableStateOf(currentValue, policy)
+    private val mutableChanged = mutableStateOf(changed)
     private val mutableFlow = MutableStateFlow(value = initialValue)
 
     private val mutex = Mutex(locked = false)
+
+    override suspend fun snapshot(): StateContainer.SnapshotStateModel<T> =
+        mutex.withLock {
+            StateContainer.SnapshotStateModel(
+                initial = initial.value,
+                current = current.value,
+                changed = changed.value
+            )
+        }
 
     @Suppress("OVERRIDE_DEPRECATION")
     override suspend fun change(block: suspend (current: T) -> T) {
@@ -77,6 +90,7 @@ internal class DefaultMutableStateContainer<T> internal constructor(
         if (mutableCurrent != other.mutableCurrent) return false
         if (mutableChanged != other.mutableChanged) return false
         if (mutableFlow != other.mutableFlow) return false
+        if (policy != other.policy) return false
 
         return mutex == other.mutex
     }
@@ -87,9 +101,10 @@ internal class DefaultMutableStateContainer<T> internal constructor(
         result = 31 * result + mutableChanged.hashCode()
         result = 31 * result + mutableFlow.hashCode()
         result = 31 * result + mutex.hashCode()
+        result = 31 * result + policy.hashCode()
         return result
     }
 
     override fun toString(): String =
-        "DefaultMutableStateContainer(initial=$initial, current=$current, stream=$stream, changed=$changed)"
+        "DefaultMutableStateContainer(initial=$initial, current=$current, stream=$stream, changed=$changed, policy=$policy)"
 }

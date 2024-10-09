@@ -33,4 +33,4 @@ plugins {
 rootProject.name = "statex"
 
 include(":statex-core")
-include(":statex-persisted")
+include(":statex-persistence")

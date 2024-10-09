@@ -1,8 +1,14 @@
 package com.mooncloak.kodetools.statex
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.structuralEqualityPolicy
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A generic container around [State] values for a component. This encapsulates the [current] [State] value, while
@@ -118,6 +124,32 @@ public interface StateContainer<T> {
      * @see [MutableStateContainer.reset] To see how to reset a [MutableStateContainer] back to its initial state.
      */
     public val changed: State<Boolean>
+
+    /**
+     * Creates a [SnapshotStateModel] of the all the current values within this [StateContainer].
+     */
+    public suspend fun snapshot(): SnapshotStateModel<T>
+
+    /**
+     * Represents the data associated with the current state of a [StateContainer] at a particular
+     * instance.
+     *
+     * @property [initial] Corresponds to the [StateContainer.initial] value at the moment this
+     * snapshot was taken.
+     *
+     * @property [current] Corresponds to the [StateContainer.current] value at the moment this
+     * snapshot was taken.
+     *
+     * @property [changed] Corresponds to the [StateContainer.changed] value at the moment this
+     * snapshot was taken.
+     */
+    @Immutable
+    @Serializable
+    public data class SnapshotStateModel<T> public constructor(
+        @SerialName(value = "initial") public val initial: T,
+        @SerialName(value = "current") public val current: T,
+        @SerialName(value = "changed") public val changed: Boolean
+    )
 
     public companion object
 }
@@ -283,6 +315,13 @@ public suspend fun <T> MutableStateContainer<T>.update(value: T): Unit =
 /**
  * Creates a [MutableStateContainer] with the provided [initialValue].
  *
+ * @param [initialValue] The default [StateContainer.initial] value and the starting
+ * [StateContainer.current] value. Note that this value can change over time with a
+ * [MutableStateContainer], if the [MutableStateContainer.reset] function is invoked.
+ *
+ * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
+ * [MutableState] instances.
+ *
  * ## Example Usage
  *
  * ```kotlin
@@ -301,5 +340,49 @@ public suspend fun <T> MutableStateContainer<T>.update(value: T): Unit =
  * ```
  */
 @Stable
-public fun <T> mutableStateContainerOf(initialValue: T): MutableStateContainer<T> =
-    DefaultMutableStateContainer(initialValue = initialValue)
+public fun <T> mutableStateContainerOf(
+    initialValue: T,
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+): MutableStateContainer<T> = DefaultMutableStateContainer(
+    initialValue = initialValue,
+    policy = policy
+)
+
+/**
+ * Creates a [MutableStateContainer] with the provided [snapshot].
+ *
+ * @param [snapshot] The [StateContainer.SnapshotStateModel] value containing the values to use
+ * initially for the returned [MutableStateContainer] instance.
+ *
+ * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
+ * [MutableState] instances.
+ *
+ * ## Example Usage
+ *
+ * ```kotlin
+ * val initialStateContainer = mutableStateContainer(true)
+ * val snapshot = initialStateContainer.snapshot()
+ * val stateContainer = mutableStateContainerOf(snapshot)
+ *
+ * stateContainer.current.value // true
+ * stateContainer.initial.value // true
+ * stateContainer.changed.value // false
+ *
+ * // Mutate the value
+ * stateContainer.change(value = false)
+ *
+ * stateContainer.current.value // false
+ * stateContainer.initial.value // true
+ * stateContainer.changed.value // true
+ * ```
+ */
+@Stable
+public fun <T> mutableStateContainerOf(
+    snapshot: StateContainer.SnapshotStateModel<T>,
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+): MutableStateContainer<T> = DefaultMutableStateContainer(
+    initialValue = snapshot.initial,
+    currentValue = snapshot.current,
+    changed = snapshot.changed,
+    policy = policy
+)
