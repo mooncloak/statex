@@ -24,15 +24,51 @@ kotlin {
             }
         }
 
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
         val androidMain by getting {
             dependencies {
                 implementation(AndroidX.lifecycle.viewModelKtx)
             }
         }
 
-        val commonTest by getting {
+        val iosMain by getting {
             dependencies {
-                implementation(kotlin("test"))
+                // Multiplatform ViewModel
+                // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
+                // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                // Multiplatform ViewModel
+                // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
+                // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+            }
+        }
+
+        val jsMain by getting {
+            dependencies {
+                // Multiplatform ViewModel
+                // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
+                // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+            }
+        }
+
+        val wasmJsMain by getting {
+            dependencies {
+                // Multiplatform ViewModel
+                // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
+                // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
     }
@@ -68,13 +104,6 @@ android {
             )
         }
     }
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].java.srcDirs("src/androidMain/kotlin")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-
-    sourceSets["test"].java.srcDirs("src/androidTest/kotlin")
-    sourceSets["test"].res.srcDirs("src/androidTest/res")
 }
 
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }

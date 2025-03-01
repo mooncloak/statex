@@ -1,3 +1,10 @@
 package com.mooncloak.kodetools.statex
 
-public actual abstract class PlatformViewModel internal actual constructor()
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+
+public actual abstract class PlatformViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
+
+    protected actual val coroutineScope: CoroutineScope?
+        get() = this.viewModelScope
+}
