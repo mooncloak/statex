@@ -93,15 +93,18 @@ public abstract class ViewModel<T>(
     public val state: StateContainer<T>
         get() = mutableStateContainer
 
-    /**
-     * A [CoroutineScope] bound to this [ViewModel]'s lifecycle defined by when the component [isBound]. This can be
-     * used from within [ViewModel] implementations functions to launch coroutines.
-     */
-    protected val coroutineScope: CoroutineScope = object : CoroutineScope {
+    private val internalCoroutineScope: CoroutineScope = object : CoroutineScope {
 
         override val coroutineContext: CoroutineContext
             get() = job + Dispatchers.Main
     }
+
+    /**
+     * A [CoroutineScope] bound to this [ViewModel]'s lifecycle defined by when the component [isBound]. This can be
+     * used from within [ViewModel] implementations functions to launch coroutines.
+     */
+    protected override val coroutineScope: CoroutineScope
+        get() = super.coroutineScope ?: internalCoroutineScope
 
     private lateinit var job: Job
 

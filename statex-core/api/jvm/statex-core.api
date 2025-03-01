@@ -31,8 +31,9 @@ public final class com/mooncloak/kodetools/statex/MutableStateContainer$DefaultI
 	public static fun update (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class com/mooncloak/kodetools/statex/PlatformViewModel {
+public abstract class com/mooncloak/kodetools/statex/PlatformViewModel : androidx/lifecycle/ViewModel {
 	public static final field $stable I
+	protected fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 }
 
 public abstract interface class com/mooncloak/kodetools/statex/StateContainer {
@@ -102,7 +103,7 @@ public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/k
 	public fun bind ()V
 	protected final fun emit (Ljava/lang/Object;)V
 	protected final fun emit (Lkotlin/jvm/functions/Function2;)V
-	protected final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	protected fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getState ()Lcom/mooncloak/kodetools/statex/StateContainer;
 	public fun isBound ()Landroidx/compose/runtime/State;
 	public fun onAbandoned ()V

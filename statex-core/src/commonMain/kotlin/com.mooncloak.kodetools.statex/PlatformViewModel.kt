@@ -19,5 +19,5 @@ public expect abstract class PlatformViewModel internal constructor() {
      * > [!Note] We call this "coroutineScope" instead of "viewModelScope" to avoid name clashes on platforms whose
      * > implementation already has a property called that.
      */
-    protected val coroutineScope: CoroutineScope?
+    protected open val coroutineScope: CoroutineScope?
 }
