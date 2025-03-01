@@ -1,6 +1,6 @@
 plugins {
     `maven-publish`
-    signing
+    // TODO: Re-enable: signing
 }
 
 version = rootProject.version
@@ -107,6 +107,7 @@ fun MavenPublication.mavenCentralPom() {
     }
 }
 
+/* Re-enable: signing
 signing {
     setRequired {
         findProperty("signing.keyId") != null
@@ -116,6 +117,7 @@ signing {
         sign(this)
     }
 }
+*/
 
 // TODO: remove after https://youtrack.jetbrains.com/issue/KT-46466 is fixed
 project.tasks.withType(AbstractPublishToMaven::class.java).configureEach {
