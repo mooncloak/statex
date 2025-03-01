@@ -22,7 +22,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/statex-core" />
-            <option value="$PROJECT_DIR$/statex-persisted" />
+            <option value="$PROJECT_DIR$/statex-persistence" />
           </set>
         </option>
       </GradleProjectSettings>
