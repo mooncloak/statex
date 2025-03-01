@@ -87,8 +87,8 @@ public final class com/mooncloak/kodetools/statex/StateContainerKt {
 public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/kodetools/statex/PlatformViewModel, androidx/compose/runtime/RememberObserver, com/mooncloak/kodetools/statex/ViewModelLifecycleScope {
 	public static final field $stable I
 	public static final field Companion Lcom/mooncloak/kodetools/statex/ViewModel$Companion;
-	public fun <init> (Ljava/lang/Object;Z)V
-	public synthetic fun <init> (Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;Z)V
+	public synthetic fun <init> (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun bind ()V
 	protected final fun emit (Ljava/lang/Object;)V
 	protected final fun emit (Lkotlin/jvm/functions/Function2;)V

@@ -2,10 +2,7 @@
 
 package com.mooncloak.kodetools.statex
 
-import androidx.compose.runtime.RememberObserver
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -42,13 +39,15 @@ import kotlin.coroutines.CoroutineContext
  * class FeedViewModel : ViewModel(initialStateValue = FeedStateModel()) {
  *
  *    fun load() {
- *        emit(value = state.current.value.copy(isLoading = true))
+ *        coroutineScope.launch {
+ *            emit(value = state.current.value.copy(isLoading = true))
  *
- *        val items = withContext(Dispatchers.IO) {
- *            feedApi.load()
+ *            val items = withContext(Dispatchers.IO) {
+ *                feedApi.load()
+ *            }
+ *
+ *            emit(value = state.current.value.copy(isLoading = false, items = items))
  *        }
- *
- *        emit(value = state.current.value.copy(isLoading = false, items = items))
  *    }
  * }
  * ```
@@ -59,6 +58,8 @@ import kotlin.coroutines.CoroutineContext
 @Stable
 public abstract class ViewModel<T>(
     initialStateValue: T,
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
+    dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
     private val bindOnRemember: Boolean = true
 ) : PlatformViewModel(),
     ViewModelLifecycleScope,
@@ -108,7 +109,11 @@ public abstract class ViewModel<T>(
 
     private lateinit var job: Job
 
-    private val mutableStateContainer = mutableStateContainerOf(initialStateValue)
+    private val mutableStateContainer = mutableStateContainerOf(
+        initialValue = initialStateValue,
+        policy = policy,
+        dispatcher = dispatcher
+    )
 
     private val mutableIsBound = mutableStateOf(false)
 
@@ -191,9 +196,7 @@ public abstract class ViewModel<T>(
     protected fun emit(block: suspend (current: T) -> T) {
         coroutineScope.launch {
             mutex.withLock {
-                withContext(Dispatchers.Main) {
-                    mutableStateContainer.update(block = block)
-                }
+                mutableStateContainer.update(block = block)
             }
         }
     }
@@ -202,9 +205,7 @@ public abstract class ViewModel<T>(
     protected fun emit(value: T) {
         coroutineScope.launch {
             mutex.withLock {
-                withContext(Dispatchers.Main) {
-                    mutableStateContainer.update(value = value)
-                }
+                mutableStateContainer.update(value = value)
             }
         }
     }
@@ -213,9 +214,7 @@ public abstract class ViewModel<T>(
     protected fun reset(initialValue: T = this.state.initial.value) {
         coroutineScope.launch {
             mutex.withLock {
-                withContext(Dispatchers.Main) {
-                    mutableStateContainer.reset(initialValue = initialValue)
-                }
+                mutableStateContainer.reset(initialValue = initialValue)
             }
         }
     }
