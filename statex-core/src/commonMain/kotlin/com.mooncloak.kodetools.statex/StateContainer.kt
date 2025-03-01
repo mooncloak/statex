@@ -6,6 +6,8 @@ import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.structuralEqualityPolicy
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -228,6 +230,10 @@ public suspend fun <T> MutableStateContainer<T>.update(value: T): Unit =
  * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
  * [MutableState] instances.
  *
+ * @param [dispatcher] The [MainCoroutineDispatcher] that is used to dispatch the changes to the state. Defaults to
+ * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
+ * platforms.
+ *
  * ## Example Usage
  *
  * ```kotlin
@@ -248,10 +254,12 @@ public suspend fun <T> MutableStateContainer<T>.update(value: T): Unit =
 @Stable
 public fun <T> mutableStateContainerOf(
     initialValue: T,
-    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
+    dispatcher: MainCoroutineDispatcher = Dispatchers.Main
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
     initialValue = initialValue,
-    policy = policy
+    policy = policy,
+    dispatcher = dispatcher
 )
 
 /**
@@ -262,6 +270,10 @@ public fun <T> mutableStateContainerOf(
  *
  * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
  * [MutableState] instances.
+ *
+ * @param [dispatcher] The [MainCoroutineDispatcher] that is used to dispatch the changes to the state. Defaults to
+ * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
+ * platforms.
  *
  * ## Example Usage
  *
@@ -285,10 +297,12 @@ public fun <T> mutableStateContainerOf(
 @Stable
 public fun <T> mutableStateContainerOf(
     snapshot: StateContainer.SnapshotStateModel<T>,
-    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy()
+    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
+    dispatcher: MainCoroutineDispatcher = Dispatchers.Main
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
     initialValue = snapshot.initial,
     currentValue = snapshot.current,
     changed = snapshot.changed,
-    policy = policy
+    policy = policy,
+    dispatcher = dispatcher
 )

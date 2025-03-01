@@ -26,15 +26,13 @@ public final class com/mooncloak/kodetools/statex/persistence/BinaryFormatHexStr
 
 public final class com/mooncloak/kodetools/statex/persistence/DefaultPersistableStateContainer : com/mooncloak/kodetools/statex/persistence/PersistableStateContainer {
 	public static final field $stable I
-	public fun <init> (Ljava/lang/Object;Lcom/mooncloak/kodetools/statex/persistence/PersistentStorage;Ljava/lang/String;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/modules/SerializersModule;Landroidx/compose/runtime/SnapshotMutationPolicy;)V
-	public fun change (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun <init> (Ljava/lang/Object;Lcom/mooncloak/kodetools/statex/persistence/PersistentStorage;Ljava/lang/String;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/modules/SerializersModule;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getChanged ()Landroidx/compose/runtime/State;
 	public fun getCurrent ()Landroidx/compose/runtime/State;
 	public fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getInitial ()Landroidx/compose/runtime/State;
 	public final fun getPolicy ()Landroidx/compose/runtime/SnapshotMutationPolicy;
-	public fun getStream ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun hashCode ()I
 	public fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -50,11 +48,6 @@ public abstract interface class com/mooncloak/kodetools/statex/persistence/Persi
 }
 
 public final class com/mooncloak/kodetools/statex/persistence/PersistableStateContainer$Companion {
-}
-
-public final class com/mooncloak/kodetools/statex/persistence/PersistableStateContainer$DefaultImpls {
-	public static fun getFlow (Lcom/mooncloak/kodetools/statex/persistence/PersistableStateContainer;)Lkotlinx/coroutines/flow/StateFlow;
-	public static fun update (Lcom/mooncloak/kodetools/statex/persistence/PersistableStateContainer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/mooncloak/kodetools/statex/persistence/PersistentStorage {

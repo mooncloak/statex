@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +21,8 @@ public class DefaultMutableStateContainer<T> internal constructor(
     initialValue: T,
     currentValue: T = initialValue,
     changed: Boolean = false,
-    public val policy: SnapshotMutationPolicy<T>
+    public val policy: SnapshotMutationPolicy<T>,
+    private val dispatcher: MainCoroutineDispatcher
 ) : MutableStateContainer<T> {
 
     override val initial: State<T>
@@ -57,12 +59,11 @@ public class DefaultMutableStateContainer<T> internal constructor(
 
             if (value != current.value) {
                 // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-                withContext(Dispatchers.Main) {
+                withContext(dispatcher) {
                     mutableCurrent.value = value
                     mutableChanged.value = true
+                    mutableFlow.value = value
                 }
-
-                mutableFlow.value = value
             }
         }
     }
@@ -70,13 +71,12 @@ public class DefaultMutableStateContainer<T> internal constructor(
     override suspend fun reset(initialValue: T) {
         mutex.withLock {
             // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-            withContext(Dispatchers.Main) {
+            withContext(dispatcher) {
                 mutableInitial.value = initialValue
                 mutableCurrent.value = initialValue
                 mutableChanged.value = false
+                mutableFlow.value = initialValue
             }
-
-            mutableFlow.value = initialValue
         }
     }
 

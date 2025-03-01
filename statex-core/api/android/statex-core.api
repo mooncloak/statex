@@ -1,13 +1,11 @@
 public final class com/mooncloak/kodetools/statex/DefaultMutableStateContainer : com/mooncloak/kodetools/statex/MutableStateContainer {
 	public static final field $stable I
-	public fun change (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getChanged ()Landroidx/compose/runtime/State;
 	public fun getCurrent ()Landroidx/compose/runtime/State;
 	public fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getInitial ()Landroidx/compose/runtime/State;
 	public final fun getPolicy ()Landroidx/compose/runtime/SnapshotMutationPolicy;
-	public fun getStream ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun hashCode ()I
 	public fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -17,7 +15,6 @@ public final class com/mooncloak/kodetools/statex/DefaultMutableStateContainer :
 
 public abstract interface class com/mooncloak/kodetools/statex/MutableStateContainer : com/mooncloak/kodetools/statex/StateContainer {
 	public static final field Companion Lcom/mooncloak/kodetools/statex/MutableStateContainer$Companion;
-	public abstract fun change (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun update (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -26,9 +23,7 @@ public final class com/mooncloak/kodetools/statex/MutableStateContainer$Companio
 }
 
 public final class com/mooncloak/kodetools/statex/MutableStateContainer$DefaultImpls {
-	public static fun getFlow (Lcom/mooncloak/kodetools/statex/MutableStateContainer;)Lkotlinx/coroutines/flow/StateFlow;
 	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun update (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/mooncloak/kodetools/statex/PlatformViewModel : androidx/lifecycle/ViewModel {
@@ -42,15 +37,10 @@ public abstract interface class com/mooncloak/kodetools/statex/StateContainer {
 	public abstract fun getCurrent ()Landroidx/compose/runtime/State;
 	public abstract fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun getInitial ()Landroidx/compose/runtime/State;
-	public abstract fun getStream ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/mooncloak/kodetools/statex/StateContainer$Companion {
-}
-
-public final class com/mooncloak/kodetools/statex/StateContainer$DefaultImpls {
-	public static fun getFlow (Lcom/mooncloak/kodetools/statex/StateContainer;)Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class com/mooncloak/kodetools/statex/StateContainer$SnapshotStateModel {
@@ -87,11 +77,10 @@ public final class com/mooncloak/kodetools/statex/StateContainer$SnapshotStateMo
 }
 
 public final class com/mooncloak/kodetools/statex/StateContainerKt {
-	public static final fun change (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun mutableStateContainerOf (Lcom/mooncloak/kodetools/statex/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
-	public static final fun mutableStateContainerOf (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
-	public static synthetic fun mutableStateContainerOf$default (Lcom/mooncloak/kodetools/statex/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;ILjava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
-	public static synthetic fun mutableStateContainerOf$default (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;ILjava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
+	public static final fun mutableStateContainerOf (Lcom/mooncloak/kodetools/statex/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
+	public static final fun mutableStateContainerOf (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
+	public static synthetic fun mutableStateContainerOf$default (Lcom/mooncloak/kodetools/statex/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ILjava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
+	public static synthetic fun mutableStateContainerOf$default (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ILjava/lang/Object;)Lcom/mooncloak/kodetools/statex/MutableStateContainer;
 	public static final fun update (Lcom/mooncloak/kodetools/statex/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

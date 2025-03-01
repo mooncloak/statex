@@ -6,11 +6,16 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.structuralEqualityPolicy
 import com.mooncloak.kodetools.statex.MutableStateContainer
 import com.mooncloak.kodetools.statex.StateContainer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 
+/**
+ * A [MutableStateContainer] that persists its values to storage.
+ */
 @ExperimentalPersistentStateAPI
 public interface PersistableStateContainer<T> : MutableStateContainer<T> {
 
@@ -35,6 +40,10 @@ public interface PersistableStateContainer<T> : MutableStateContainer<T> {
  *
  * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
  * [MutableState] instances.
+ *
+ * @param [dispatcher] The [MainCoroutineDispatcher] that is used to dispatch the changes to the state. Defaults to
+ * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
+ * platforms.
  *
  * ## Example Usage
  *
@@ -61,12 +70,14 @@ public inline fun <reified T> persistableStateContainerOf(
     serializersModule: SerializersModule = EmptySerializersModule(),
     serializer: KSerializer<T> = serializersModule.serializer(),
     policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
-    storage: PersistentStorage = PersistentStorage.platformDefault()
+    storage: PersistentStorage = PersistentStorage.platformDefault(),
+    dispatcher: MainCoroutineDispatcher = Dispatchers.Main
 ): PersistableStateContainer<T> = DefaultPersistableStateContainer(
     key = key,
     defaultValue = defaultValue,
     serializer = serializer,
     serializersModule = serializersModule,
     policy = policy,
-    storage = storage
+    storage = storage,
+    dispatcher = dispatcher
 )
