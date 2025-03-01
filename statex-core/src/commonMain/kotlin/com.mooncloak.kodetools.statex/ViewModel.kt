@@ -192,7 +192,7 @@ public abstract class ViewModel<T>(
         coroutineScope.launch {
             mutex.withLock {
                 withContext(Dispatchers.Main) {
-                    mutableStateContainer.change(block = block)
+                    mutableStateContainer.update(block = block)
                 }
             }
         }
@@ -203,7 +203,7 @@ public abstract class ViewModel<T>(
         coroutineScope.launch {
             mutex.withLock {
                 withContext(Dispatchers.Main) {
-                    mutableStateContainer.change(value = value)
+                    mutableStateContainer.update(value = value)
                 }
             }
         }

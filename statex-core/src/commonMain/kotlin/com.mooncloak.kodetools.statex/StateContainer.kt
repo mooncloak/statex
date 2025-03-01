@@ -60,36 +60,10 @@ public interface StateContainer<T> {
      * stateContainer.current.value
      * ```
      *
-     * @see [MutableStateContainer.change] For a way of changing this value.
+     * @see [MutableStateContainer.update] For a way of changing this value.
      * @see [MutableStateContainer.reset] For a way of resetting this value.
      */
     public val current: State<T>
-
-    /**
-     * A [Flow] of changes that occur to the [current] value over time. Whenever the [current] [State] value changes,
-     * that new value is emitted through this [Flow]. This is a [StateFlow] which means that it can retain the last
-     * emitted value which can be accessed like so: `container.stream.value`.
-     *
-     * > [!Note]
-     * > This is a "hot" flow, so changes can be emitted to it even when there are no subscribers. Since this is a
-     * > [StateFlow] instance, it can be shared by multiple subscribers.
-     *
-     * ## Example Usage
-     *
-     * ```kotlin
-     * stateContainer.stream.onEach { ... }
-     *                      .launchIn(coroutineScope)
-     * ```
-     */
-    @Deprecated(
-        message = "The 'stream' property was renamed to 'flow'.",
-        replaceWith = ReplaceWith(
-            "flow",
-            "com.mooncloak.kodetools.statex.StateContainer"
-        ),
-        level = DeprecationLevel.WARNING
-    )
-    public val stream: StateFlow<T>
 
     /**
      * A [Flow] of changes that occur to the [current] value over time. Whenever the [current] [State] value changes,
@@ -107,8 +81,7 @@ public interface StateContainer<T> {
      *                      .launchIn(coroutineScope)
      * ```
      */
-    @Suppress("DEPRECATION")
-    public val flow: StateFlow<T> get() = stream
+    public val flow: StateFlow<T>
 
     /**
      * A [State] that determines whether the [current] value ever changed from the [initial] value. Once the [current]
@@ -183,43 +156,6 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      * ## Example Usage
      *
      * ```kotlin
-     * stateContainer.change { current ->
-     *     // Perform some logic
-     *
-     *     // Return an updated value from this function
-     *     current.copy(...)
-     * }
-     * ```
-     *
-     * @param [block] The function that will be invoked to obtain the new [current] value.
-     */
-    @Deprecated(
-        message = "The 'change' function was renamed to 'update'.",
-        replaceWith = ReplaceWith(
-            "update",
-            "com.mooncloak.kodetools.statex"
-        ),
-        level = DeprecationLevel.WARNING
-    )
-    public suspend fun change(block: suspend (current: T) -> T)
-
-    /**
-     * Updates the [current] value to be the value obtained by invoking the provided [block] function. The [block]
-     * function is invoked within a lock, so subsequent calls to read the contained state values, such as [current],
-     * are guaranteed to return the same value, as no other mutations can occur until after the function returns and
-     * its result is emitted.
-     *
-     * The provided [block] function is provided the [current] value for convenience. Though, explicitly accessing the
-     * [current] value will return the same value.
-     *
-     * > [!Note]
-     * > All write operations for a [MutableStateContainer] are safe to access concurrently. This means that if another
-     * > mutation is currently running while this function is invoked, then this function will suspend until that
-     * > function has finished.
-     *
-     * ## Example Usage
-     *
-     * ```kotlin
      * stateContainer.update { current ->
      *     // Perform some logic
      *
@@ -230,16 +166,14 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      *
      * @param [block] The function that will be invoked to obtain the new [current] value.
      */
-    @Suppress("DEPRECATION")
-    public suspend fun update(block: suspend (current: T) -> T): Unit =
-        change(block)
+    public suspend fun update(block: suspend (current: T) -> T): Unit
 
     /**
      * Resets the state to the provided [initialValue]. This provides a way to override what the initial
      * value was by providing an [initialValue] as a parameter.
      *
      * > [!Note]
-     * > This is different from invoking the [change] function as it sets all the values back to their initial state,
+     * > This is different from invoking the [update] function as it sets all the values back to their initial state,
      * > as if the initial value was the provided [initialValue].
      *
      * > [!Note]
@@ -263,34 +197,6 @@ public interface MutableStateContainer<T> : StateContainer<T> {
 
     public companion object
 }
-
-/**
- * Updates the [StateContainer.current] value to be the provided [value]. This is a convenience function that delegates
- * to the [MutableStateContainer.change] by providing a higher-order function that simply returns the provided [value].
- *
- * > [!Note]
- * > All write operations for a [MutableStateContainer] are safe to access concurrently. This means that if another
- * > mutation is currently running while this function is invoked, then this function will suspend until that
- * > function has finished.
- *
- * ## Example Usage
- *
- * ```kotlin
- * stateContainer.change(value = newValue)
- * ```
- *
- * @param [value] The value to change the [StateContainer.current] value to.
- */
-@Deprecated(
-    message = "The 'change' function was renamed to 'update'.",
-    replaceWith = ReplaceWith(
-        "update",
-        "com.mooncloak.kodetools.statex.MutableStateContainer.update"
-    ),
-    level = DeprecationLevel.WARNING
-)
-public suspend fun <T> MutableStateContainer<T>.change(value: T): Unit =
-    this.update { value }
 
 /**
  * Updates the [StateContainer.current] value to be the provided [value]. This is a convenience function that delegates

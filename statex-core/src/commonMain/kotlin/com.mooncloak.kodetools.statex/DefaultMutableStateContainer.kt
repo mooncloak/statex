@@ -29,8 +29,7 @@ public class DefaultMutableStateContainer<T> internal constructor(
     override val current: State<T>
         get() = mutableCurrent
 
-    @Suppress("OVERRIDE_DEPRECATION")
-    override val stream: StateFlow<T>
+    override val flow: StateFlow<T>
         get() = mutableFlow.asStateFlow()
 
     override val changed: State<Boolean>
@@ -52,8 +51,7 @@ public class DefaultMutableStateContainer<T> internal constructor(
             )
         }
 
-    @Suppress("OVERRIDE_DEPRECATION")
-    override suspend fun change(block: suspend (current: T) -> T) {
+    override suspend fun update(block: suspend (current: T) -> T) {
         mutex.withLock {
             val value = block.invoke(current.value)
 
@@ -106,5 +104,5 @@ public class DefaultMutableStateContainer<T> internal constructor(
     }
 
     override fun toString(): String =
-        "DefaultMutableStateContainer(initial=$initial, current=$current, stream=$stream, changed=$changed, policy=$policy)"
+        "DefaultMutableStateContainer(initial=$initial, current=$current, flow=$flow, changed=$changed, policy=$policy)"
 }
