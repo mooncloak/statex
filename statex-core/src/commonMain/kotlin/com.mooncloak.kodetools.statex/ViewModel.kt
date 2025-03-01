@@ -193,29 +193,23 @@ public abstract class ViewModel<T>(
     protected open fun onUnbind() {}
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun emit(block: suspend (current: T) -> T) {
-        coroutineScope.launch {
-            mutex.withLock {
-                mutableStateContainer.update(block = block)
-            }
+    protected suspend fun emit(block: suspend (current: T) -> T) {
+        mutex.withLock {
+            mutableStateContainer.update(block = block)
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun emit(value: T) {
-        coroutineScope.launch {
-            mutex.withLock {
-                mutableStateContainer.update(value = value)
-            }
+    protected suspend fun emit(value: T) {
+        mutex.withLock {
+            mutableStateContainer.update(value = value)
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun reset(initialValue: T = this.state.initial.value) {
-        coroutineScope.launch {
-            mutex.withLock {
-                mutableStateContainer.reset(initialValue = initialValue)
-            }
+    protected suspend fun reset(initialValue: T = this.state.initial.value) {
+        mutex.withLock {
+            mutableStateContainer.reset(initialValue = initialValue)
         }
     }
 

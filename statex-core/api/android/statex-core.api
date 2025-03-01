@@ -90,8 +90,8 @@ public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/k
 	public fun <init> (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;Z)V
 	public synthetic fun <init> (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun bind ()V
-	protected final fun emit (Ljava/lang/Object;)V
-	protected final fun emit (Lkotlin/jvm/functions/Function2;)V
+	protected final fun emit (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun emit (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getState ()Lcom/mooncloak/kodetools/statex/StateContainer;
 	public fun isBound ()Landroidx/compose/runtime/State;
@@ -100,8 +100,8 @@ public abstract class com/mooncloak/kodetools/statex/ViewModel : com/mooncloak/k
 	public fun onForgotten ()V
 	public fun onRemembered ()V
 	protected fun onUnbind ()V
-	protected final fun reset (Ljava/lang/Object;)V
-	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/ViewModel;Ljava/lang/Object;ILjava/lang/Object;)V
+	protected final fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun reset$default (Lcom/mooncloak/kodetools/statex/ViewModel;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun unbind ()V
 }
 
