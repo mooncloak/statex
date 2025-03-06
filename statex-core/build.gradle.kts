@@ -32,7 +32,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation(AndroidX.lifecycle.viewModelKtx)
+                api(AndroidX.lifecycle.viewModelKtx)
             }
         }
 
@@ -41,7 +41,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
 
@@ -50,7 +50,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
 
@@ -59,7 +59,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
 
@@ -68,7 +68,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
     }
