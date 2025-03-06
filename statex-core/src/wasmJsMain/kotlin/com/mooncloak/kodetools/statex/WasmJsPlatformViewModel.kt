@@ -1,10 +1,9 @@
 package com.mooncloak.kodetools.statex
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 
-public actual abstract class PlatformViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
+// TODO: Re-enable multiplatform viewmodel library support. Currently it causes runtime issues with WASM.
+public actual abstract class PlatformViewModel internal actual constructor() {
 
-    protected actual open val coroutineScope: CoroutineScope?
-        get() = this.viewModelScope
+    protected actual open val coroutineScope: CoroutineScope? = null
 }
