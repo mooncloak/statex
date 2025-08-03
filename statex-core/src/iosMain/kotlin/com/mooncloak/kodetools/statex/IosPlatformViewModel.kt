@@ -1,10 +1,16 @@
 package com.mooncloak.kodetools.statex
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlin.coroutines.CoroutineContext
 
 public actual abstract class PlatformViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
-    protected actual open val coroutineScope: CoroutineScope?
-        get() = this.viewModelScope
+    protected actual open val viewModelScope: CoroutineScope =
+        object : CoroutineScope {
+
+            override val coroutineContext: CoroutineContext
+                get() = SupervisorJob() + Dispatchers.Main
+        }
 }

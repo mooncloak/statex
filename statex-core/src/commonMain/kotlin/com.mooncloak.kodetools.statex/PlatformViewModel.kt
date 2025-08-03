@@ -11,13 +11,5 @@ import kotlinx.coroutines.CoroutineScope
  */
 public expect abstract class PlatformViewModel internal constructor() {
 
-    /**
-     * The [CoroutineScope] for this platform viewmodel instance. This is nullable because the platform might not
-     * provide a value here, in which case, the [ViewModel] component that extends this [PlatformViewModel] must
-     * handle the creation of the coroutine scope.
-     *
-     * > [!Note] We call this "coroutineScope" instead of "viewModelScope" to avoid name clashes on platforms whose
-     * > implementation already has a property called that.
-     */
-    protected open val coroutineScope: CoroutineScope?
+    protected open val viewModelScope: CoroutineScope
 }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A design pattern level component that encapsulates state management and application logic for a user interface
@@ -94,21 +93,6 @@ public abstract class ViewModel<T>(
     public val state: StateContainer<T>
         get() = mutableStateContainer
 
-    private val internalCoroutineScope: CoroutineScope = object : CoroutineScope {
-
-        override val coroutineContext: CoroutineContext
-            get() = job + Dispatchers.Main
-    }
-
-    /**
-     * A [CoroutineScope] bound to this [ViewModel]'s lifecycle defined by when the component [isBound]. This can be
-     * used from within [ViewModel] implementations functions to launch coroutines.
-     */
-    protected override val coroutineScope: CoroutineScope
-        get() = super.coroutineScope ?: internalCoroutineScope
-
-    private lateinit var job: Job
-
     private val mutableStateContainer = mutableStateContainerOf(
         initialValue = initialStateValue,
         policy = policy,
@@ -143,23 +127,6 @@ public abstract class ViewModel<T>(
 
     override fun bind() {
         if (!isBound.value) {
-            // Prevent any operations from being invoked while we are binding. Once, we are finished
-            // binding, we can unlock and allow any operations to occur.
-            mutex.tryLock()
-
-            if (::job.isInitialized && job.isActive) {
-                // Cancel any existing job. The job should be properly cancelled in the unbind
-                // function, but if for some reason, it didn't get cancelled, make sure we cancel
-                // it here.
-                job.cancel("Creating new Job in ${ViewModel::class.simpleName} ${ViewModel<*>::bind::name} function.")
-            }
-
-            job = SupervisorJob()
-
-            // Unlock the Mutex so that other operations can be performed, now that this ViewModel
-            // is bound to a lifecycle.
-            mutex.unlock()
-
             mutableIsBound.value = true
 
             onBind()
@@ -169,12 +136,6 @@ public abstract class ViewModel<T>(
     override fun unbind() {
         if (isBound.value) {
             onUnbind()
-
-            job.cancel()
-
-            // Lock the Mutex so that mutation operations are not performed while this component is
-            // not bound.
-            mutex.tryLock()
 
             mutableIsBound.value = false
         }
