@@ -4,6 +4,14 @@ package com.mooncloak.kodetools.statex
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -57,10 +65,14 @@ import kotlinx.coroutines.sync.withLock
 @Stable
 public abstract class ViewModel<T>(
     initialStateValue: T,
-    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
-    dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
+    private val dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
+    sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
 ) : PlatformViewModel(),
     RememberObserver {
+
+    protected open fun onInit(): Flow<T> = emptyFlow()
+
+    private val mutableState = MutableStateFlow<T?>(null)
 
     /**
      * Provides access to the read-only [StateContainer] values. [ViewModel] implementations can mutate the wrapped
@@ -85,21 +97,15 @@ public abstract class ViewModel<T>(
      *
      * @see [StateContainer]
      */
-    public val state: StateContainer<T>
-        get() = mutableStateContainer
-
-    private val mutableStateContainer = mutableStateContainerOf(
-        initialValue = initialStateValue,
-        policy = policy,
-        dispatcher = dispatcher
+    public val state: StateFlow<T> = merge(
+        onInit(),
+        mutableState.filterNotNull()
+    ).stateIn(
+        scope = viewModelScope,
+        started = sharingStarted,
+        initialValue = initialStateValue
     )
 
-    private val mutableIsBound = mutableStateOf(false)
-
-    // The Mutex for all operations to ensure that they are all concurrency-safe. The Mutex is
-    // initially locked until the lifecycle is bound, to prevent mutation operations from occurring
-    // while the ViewModel is not bound and causing exceptions to be thrown or other undefined
-    // behavior.
     private val mutex = Mutex(locked = true)
 
     override fun onRemembered() {
@@ -114,21 +120,36 @@ public abstract class ViewModel<T>(
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(block: suspend (current: T) -> T) {
         mutex.withLock {
-            mutableStateContainer.update(block = block)
+            val currentValue = state.value
+            val updatedValue = block.invoke(currentValue)
+
+            if (updatedValue != currentValue) {
+                // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
+                withContext(dispatcher) {
+                    mutableState.value = updatedValue
+                }
+            }
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(value: T) {
         mutex.withLock {
-            mutableStateContainer.update(value = value)
+            val currentValue = state.value
+
+            if (value != currentValue) {
+                // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
+                withContext(dispatcher) {
+                    mutableState.value = value
+                }
+            }
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected suspend fun reset(initialValue: T = this.state.initial.value) {
+    protected suspend fun reset(initialValue: T = this.state.value) {
         mutex.withLock {
-            mutableStateContainer.reset(initialValue = initialValue)
+            TODO()
         }
     }
 
