@@ -34,4 +34,4 @@ rootProject.name = "statex"
 
 include(":statex-viewmodel")
 include(":statex-container")
-include(":statex-persistence")
+include(":statex-container-persistence")
