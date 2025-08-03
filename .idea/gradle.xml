@@ -23,7 +23,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/build-logic" />
-            <option value="$PROJECT_DIR$/statex-core" />
+            <option value="$PROJECT_DIR$/statex-container" />
+            <option value="$PROJECT_DIR$/statex-container-persistence" />
+            <option value="$PROJECT_DIR$/statex-viewmodel" />
           </set>
         </option>
       </GradleProjectSettings>
