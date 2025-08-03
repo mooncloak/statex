@@ -17,25 +17,20 @@ import kotlinx.coroutines.sync.withLock
 
 /**
  * A design pattern level component that encapsulates state management and application logic for a user interface
- * component or concept, such as a screen within an application. A [ViewModel] follows the uni-directional data flow
+ * component or concept, such as a "screen" within an application. A [ViewModel] follows the uni-directional data flow
  * (UDF) approach recommended by the Jetpack Compose documentation.
  *
- * A [ViewModel] exposes a single [StateContainer] of the wrapped [State] values via the [state] property. This [state]
- * property provides a stream of state changes that occur as a result of the application logic within the [ViewModel]
- * function, and can be subscribed to inside or outside the context of a `@Composable` function.
+ * A [ViewModel] exposes a single [StateFlow] of the wrapped [State] model values via the [state] property. This
+ * [state] property provides a stream of state changes that occur as a result of the application logic within the
+ * [ViewModel] function, and can be subscribed to inside or outside the context of a `@Composable` function.
  *
  * Functions within a [ViewModel] should handle performing application logic, coordinating and invoking business logic,
  * mapping to the appropriate models, and emitting the updated state values as a result of those changes. Publicly
  * exposed functions will be invoked from the user interface components as a result of some action
  * (ex: user interaction). It is recommended to keep these functions as non-suspending functions, as a [ViewModel]
- * contains its own lifecycle and has a [coroutineScope] that can be used to launch coroutines internally. This removes
- * the need for the call-site to have to wrap the function invocations in a coroutine scope themselves.
- *
- * > [!Note]
- * > A [ViewModel] has its own lifecycle and must be bound to the user interface component (ex: `@Composable` function,
- * > View, etc.) for it to work correctly. By default, a [ViewModel] is bound to the [remember] lifecycle since it
- * > implements the [RememberObserver] interface. If this behavior is not desired, simply pass `bindOnRemember=false`
- * > to the [ViewModel] constructor.
+ * contains its own lifecycle and has a [CoroutineScope] that can be used to launch coroutines internally via the
+ * [viewModelScope] property. This removes the need for the call-site to have to wrap the function invocations in a
+ * coroutine scope themselves.
  *
  * > [!Note]
  * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
@@ -46,21 +41,26 @@ import kotlinx.coroutines.sync.withLock
  * class FeedViewModel : ViewModel(initialStateValue = FeedStateModel()) {
  *
  *    fun load() {
- *        coroutineScope.launch {
- *            emit(value = state.current.value.copy(isLoading = true))
+ *        viewModelScope.launch {
+ *            emit { current -> current.copy(isLoading = true) }
  *
  *            val items = withContext(Dispatchers.IO) {
  *                feedApi.load()
  *            }
  *
- *            emit(value = state.current.value.copy(isLoading = false, items = items))
+ *            emit { current -> current.copy(isLoading = false, items = items) }
  *        }
  *    }
  * }
  * ```
  *
- * @param [initialStateValue] The initial value to provide to the [mutableStateContainer] function when constructing
- * the [StateContainer] instance for the [state] property.
+ * @param [initialStateValue] The initial state model value that will be emitted from the [ViewModel.state]
+ * [StateFlow].
+ *
+ * @param [dispatcher] The [CoroutineDispatcher] used to emit state models via the [emit] functions.
+ *
+ * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
+ * construct a [StateFlow] from the [ViewModel.onInit] function and the internal [MutableStateFlow].
  */
 @Stable
 public abstract class ViewModel<T : Any>(
@@ -70,32 +70,29 @@ public abstract class ViewModel<T : Any>(
 ) : PlatformViewModel(),
     RememberObserver {
 
+    /**
+     * Called during the initialization phase to produce a [Flow] of type [T].
+     * The returned flow can be used to emit updates or manage state changes over time.
+     *
+     * @return A [Flow] of type [T], or an empty flow by default.
+     */
     protected open fun onInit(): Flow<T> = emptyFlow()
 
     private val mutableState = MutableStateFlow<T?>(null)
 
     /**
-     * Provides access to the read-only [StateContainer] values. [ViewModel] implementations can mutate the wrapped
-     * state by emitting new state values via the protected [emit] functions.
+     * Represents the state managed by the ViewModel in the form of a [StateFlow].
      *
-     * ## Example Usage:
+     * This state is constructed by merging the initial state flow produced by [onInit] and a mutable
+     * state flow that holds non-null values. The resulting flow is scoped to the [viewModelScope]
+     * and starts sharing its updates as determined by the `sharingStarted` parameter. It initializes
+     * with the value provided by `initialStateValue`.
      *
-     * ```kotlin
-     * @Composable
-     * fun FeedScreen(
-     *     viewModel: FeedViewModel,
-     *     modifier: Modifier = Modifier
-     * ) {
-     *     // Retrieve and use the compose State<T> value
-     *     val currentState by viewModel.state.current
+     * The [state] flow updates dynamically to reflect state changes triggered through internal mechanisms
+     * and can be observed to react to state transitions accordingly.
      *
-     *     AnimatedVisibility(
-     *         visible = currentState.isLoading // Example usage of the underlying state value
-     *     ) { ... }
-     * }
-     * ```
-     *
-     * @see [StateContainer]
+     * It effectively combines initialization logic, mutable state management, and lifetime scoping
+     * to provide a reactive and consistent model of the ViewModel's state.
      */
     public val state: StateFlow<T> = merge(
         onInit(),
@@ -108,15 +105,21 @@ public abstract class ViewModel<T : Any>(
 
     private val mutex = Mutex(locked = false)
 
-    override fun onRemembered() {
-    }
+    override fun onRemembered() {}
 
-    override fun onForgotten() {
-    }
+    override fun onForgotten() {}
 
-    override fun onAbandoned() {
-    }
+    override fun onAbandoned() {}
 
+    /**
+     * Emits an updated state value by applying the given transformation to the current state.
+     *
+     * The function ensures thread-safety using a mutex lock and updates the state in a manner
+     * that is compatible with Compose's State management.
+     *
+     * @param [block] A suspending function that takes the current state of type [T] as input
+     * and returns the updated state of type [T].
+     */
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(block: suspend (current: T) -> T) {
         mutex.withLock {
@@ -132,6 +135,15 @@ public abstract class ViewModel<T : Any>(
         }
     }
 
+    /**
+     * Emits a new state value by directly setting the provided value.
+     *
+     * This function is a shortcut for updating the state to a specific value
+     * without needing a transformation block. It ensures thread-safe updates
+     * to the state and integrates seamlessly with Compose's State management.
+     *
+     * @param [value] The new state value of type [T] to be emitted.
+     */
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(value: T): Unit = emit { value }
 
