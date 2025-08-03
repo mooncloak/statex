@@ -1,0 +1,82 @@
+public final class com/kodetools/statex/container/DefaultMutableStateContainer : com/kodetools/statex/container/MutableStateContainer {
+	public static final field $stable I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChanged ()Landroidx/compose/runtime/State;
+	public fun getCurrent ()Landroidx/compose/runtime/State;
+	public fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getInitial ()Landroidx/compose/runtime/State;
+	public final fun getPolicy ()Landroidx/compose/runtime/SnapshotMutationPolicy;
+	public fun hashCode ()I
+	public fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+	public fun update (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/kodetools/statex/container/MutableStateContainer : com/kodetools/statex/container/StateContainer {
+	public static final field Companion Lcom/kodetools/statex/container/MutableStateContainer$Companion;
+	public abstract fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun reset$default (Lcom/kodetools/statex/container/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun update (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/kodetools/statex/container/MutableStateContainer$Companion {
+}
+
+public final class com/kodetools/statex/container/MutableStateContainer$DefaultImpls {
+	public static synthetic fun reset$default (Lcom/kodetools/statex/container/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class com/kodetools/statex/container/StateContainer {
+	public static final field Companion Lcom/kodetools/statex/container/StateContainer$Companion;
+	public abstract fun getChanged ()Landroidx/compose/runtime/State;
+	public abstract fun getCurrent ()Landroidx/compose/runtime/State;
+	public abstract fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getInitial ()Landroidx/compose/runtime/State;
+	public abstract fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/kodetools/statex/container/StateContainer$Companion {
+}
+
+public final class com/kodetools/statex/container/StateContainer$SnapshotStateModel {
+	public static final field $stable I
+	public static final field Companion Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel$Companion;
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Z)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Z)Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;
+	public static synthetic fun copy$default (Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;Ljava/lang/Object;Ljava/lang/Object;ZILjava/lang/Object;)Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChanged ()Z
+	public final fun getCurrent ()Ljava/lang/Object;
+	public final fun getInitial ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/kodetools/statex/container/StateContainer$SnapshotStateModel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/kodetools/statex/container/StateContainer$SnapshotStateModel$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/kodetools/statex/container/StateContainerKt {
+	public static final fun mutableStateContainerOf (Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)Lcom/kodetools/statex/container/MutableStateContainer;
+	public static final fun mutableStateContainerOf (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)Lcom/kodetools/statex/container/MutableStateContainer;
+	public static synthetic fun mutableStateContainerOf$default (Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ILjava/lang/Object;)Lcom/kodetools/statex/container/MutableStateContainer;
+	public static synthetic fun mutableStateContainerOf$default (Ljava/lang/Object;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;ILjava/lang/Object;)Lcom/kodetools/statex/container/MutableStateContainer;
+	public static final fun update (Lcom/kodetools/statex/container/MutableStateContainer;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

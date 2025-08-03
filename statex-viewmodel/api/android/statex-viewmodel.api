@@ -1,0 +1,17 @@
+public abstract class com/kodetools/statex/viewmodel/PlatformViewModel : androidx/lifecycle/ViewModel {
+	protected fun getViewModelScope ()Lkotlinx/coroutines/CoroutineScope;
+}
+
+public abstract class com/kodetools/statex/viewmodel/ViewModel : com/kodetools/statex/viewmodel/PlatformViewModel {
+	public static final field Companion Lcom/kodetools/statex/viewmodel/ViewModel$Companion;
+	public fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/MainCoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/MainCoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected final fun emit (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun emit (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	protected fun onInit ()Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/kodetools/statex/viewmodel/ViewModel$Companion {
+}
+

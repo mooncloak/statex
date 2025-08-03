@@ -5,8 +5,6 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose")
     id("maven-publish")
     id("org.jetbrains.dokka")
     id("statex.multiplatform")
