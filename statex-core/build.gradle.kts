@@ -65,6 +65,10 @@ kotlin {
 
         val wasmJsMain by getting {
             dependencies {
+                // Multiplatform ViewModel
+                // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
+                // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             }
         }
     }
