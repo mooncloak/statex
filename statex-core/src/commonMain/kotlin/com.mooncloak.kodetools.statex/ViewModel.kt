@@ -63,7 +63,7 @@ import kotlinx.coroutines.sync.withLock
  * the [StateContainer] instance for the [state] property.
  */
 @Stable
-public abstract class ViewModel<T>(
+public abstract class ViewModel<T : Any>(
     initialStateValue: T,
     private val dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
@@ -76,7 +76,7 @@ public abstract class ViewModel<T>(
 
     /**
      * Provides access to the read-only [StateContainer] values. [ViewModel] implementations can mutate the wrapped
-     * state by emitting new state values via the protected [emit] and [reset] functions.
+     * state by emitting new state values via the protected [emit] functions.
      *
      * ## Example Usage:
      *
@@ -106,7 +106,7 @@ public abstract class ViewModel<T>(
         initialValue = initialStateValue
     )
 
-    private val mutex = Mutex(locked = true)
+    private val mutex = Mutex(locked = false)
 
     override fun onRemembered() {
     }
@@ -133,25 +133,7 @@ public abstract class ViewModel<T>(
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected suspend fun emit(value: T) {
-        mutex.withLock {
-            val currentValue = state.value
-
-            if (value != currentValue) {
-                // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-                withContext(dispatcher) {
-                    mutableState.value = value
-                }
-            }
-        }
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected suspend fun reset(initialValue: T = this.state.value) {
-        mutex.withLock {
-            TODO()
-        }
-    }
+    protected suspend fun emit(value: T): Unit = emit { value }
 
     public companion object
 }
