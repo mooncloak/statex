@@ -59,13 +59,8 @@ public abstract class ViewModel<T>(
     initialStateValue: T,
     policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
     dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
-    private val bindOnRemember: Boolean = true
 ) : PlatformViewModel(),
-    ViewModelLifecycleScope,
     RememberObserver {
-
-    override val isBound: State<Boolean>
-        get() = mutableIsBound
 
     /**
      * Provides access to the read-only [StateContainer] values. [ViewModel] implementations can mutate the wrapped
@@ -108,50 +103,13 @@ public abstract class ViewModel<T>(
     private val mutex = Mutex(locked = true)
 
     override fun onRemembered() {
-        if (bindOnRemember) {
-            bind()
-        }
     }
 
     override fun onForgotten() {
-        if (bindOnRemember) {
-            unbind()
-        }
     }
 
     override fun onAbandoned() {
-        if (bindOnRemember) {
-            unbind()
-        }
     }
-
-    override fun bind() {
-        if (!isBound.value) {
-            mutableIsBound.value = true
-
-            onBind()
-        }
-    }
-
-    override fun unbind() {
-        if (isBound.value) {
-            onUnbind()
-
-            mutableIsBound.value = false
-        }
-    }
-
-    /**
-     * Invoked when this component is bound. This can be useful for startup operations. Remember to invoke the super
-     * implementation as there may be super class logic that needs to be invoked.
-     */
-    protected open fun onBind() {}
-
-    /**
-     * Invoked when this component is unbound. This can be useful for cleanup operations. Remember to invoke the super
-     * implementation as there may be super class logic that needs to be invoked.
-     */
-    protected open fun onUnbind() {}
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(block: suspend (current: T) -> T) {
