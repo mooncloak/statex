@@ -33,3 +33,4 @@ plugins {
 rootProject.name = "statex"
 
 include(":statex-viewmodel")
+include(":statex-container")
