@@ -1,4 +1,4 @@
-package com.mooncloak.kodetools.statex.container
+package com.kodetools.statex.container
 
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
@@ -13,7 +13,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 /**
- * A default [com.mooncloak.kodetools.statex.container.MutableStateContainer] implementation.
+ * A default [MutableStateContainer] implementation.
  */
 @Stable
 public class DefaultMutableStateContainer<T> internal constructor(
