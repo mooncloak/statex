@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.structuralEqualityPolicy
-import com.mooncloak.kodetools.statex.MutableStateContainer
+import com.kodetools.statex.container.MutableStateContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.serialization.KSerializer

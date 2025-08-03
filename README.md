@@ -1,44 +1,90 @@
-# statex
+# Statex
 
-Compose multiplatform state extensions.
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mooncloak/statex)
 
-<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/mooncloak/statex">
+A modern, multiplatform state management toolkit for Kotlin and Compose applications.
+
+## Overview 🎯
+
+Statex provides a set of powerful, yet easy-to-use tools for managing state in your Kotlin multiplatform applications. It consists of several modules:
+
+- **statex-viewmodel**: A ViewModel implementation with built-in state management
+- **statex-container**: A lightweight, flexible state container system
+- **statex-container-persistence**: Persistence extensions for state containers
+
+## Features ✨
+
+- 🎯 **Multiplatform Support**: Works across Android, iOS, Desktop, and Web
+- 🔄 **Unidirectional Data Flow**: Clean and predictable state management
+- 📦 **Modular Design**: Use only what you need
+- 🛡️ **Type-safe**: Leverages Kotlin's type system for robust state handling
+- 🎨 **Compose Integration**: Seamless integration with Jetpack Compose
 
 ## Getting Started 🏁
 
-Checkout the [releases page](https://github.com/mooncloak/moonkit/releases) to get the latest version.
-<br/><br/>
-<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/mooncloak/statex">
-
-### Repository
+### Add the Repository
 
 ```kotlin
-repositories {
-  maven("https://repo.repsy.io/mvn/mooncloak/public")
+repositories { maven("https://repo.repsy.io/mvn/mooncloak/public") }
+``` 
+
+### Choose Your Dependencies
+
+```kotlin 
+implementation("com.kodetools.statex:statex-viewmodel:VERSION")
+implementation("com.kodetools.statex:statex-container:VERSION")
+implementation("com.kodetools.statex:statex-container-persistence:VERSION")
+``` 
+
+## Usage Examples 💡
+
+### Basic ViewModel Usage
+
+```kotlin 
+class CounterViewModel : ViewModel(initialStateValue = CounterState()) { 
+    fun increment() { 
+        viewModelScope.launch { 
+            emit { current -> 
+                current.copy(count = current.count + 1) 
+            } 
+        } 
+    } 
 }
-```
 
-### Dependencies
+@Composable 
+fun CounterScreen(viewModel: CounterViewModel) { 
+    val state by viewModel.state.collectAsState()
+    Button(onClick = { viewModel.increment() }) {
+        Text("Count: ${state.count}")
+    }
+}
+``` 
 
-```kotlin
-implementation("com.mooncloak.kodetools.statex:statex-core:VERSION")
-```
+### State Container Usage
 
-## Documentation 📃
+```kotlin 
+val stateContainer = mutableStateContainerOf(snapshot = StateContainer.SnapshotStateModel(initial = true, current = false))
+// Access current state 
+val currentValue = stateContainer.current.value 
+val hasChanged = stateContainer.changed.value
+// Update state 
+stateContainer.update { !it }
+``` 
 
-More detailed documentation is available in the [docs](docs/) folder. The entry point to the documentation can be
-found [here](docs/index.md).
+## Documentation 📚
 
-## Security 🛡️
+Detailed documentation is available in the [docs](docs/) folder:
+- [Getting Started Guide](docs/index.md)
+- [ViewModel Documentation](docs/viewmodel.md)
+- [State Container Guide](docs/state-container.md)
+- [API Reference](docs/api-reference.md)
 
-For security vulnerabilities, concerns, or issues, please refer to the [security policy](SECURITY.md) for more
-information on appropriate approaches for disclosure.
+## Contributing 🤝
 
-## Contributing ✍️
-
-Outside contributions are welcome for this project. Please follow the [code of conduct](CODE_OF_CONDUCT.md)
-and [coding conventions](CODING_CONVENTIONS.md) when contributing. If contributing code, please add thorough documents
-and tests. Thank you!
+We welcome contributions! Please check out our:
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Coding Conventions](CODING_CONVENTIONS.md)
+- [Security Policy](SECURITY.md)
 
 ## License ⚖️
 

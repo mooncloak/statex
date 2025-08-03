@@ -5,7 +5,7 @@ import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import com.kodetools.statex.StateContainer
+import com.kodetools.statex.container.StateContainer
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
