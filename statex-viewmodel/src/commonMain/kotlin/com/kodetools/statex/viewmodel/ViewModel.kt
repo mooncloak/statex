@@ -2,7 +2,6 @@
 
 package com.kodetools.statex.viewmodel
 
-import androidx.compose.runtime.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +32,8 @@ import kotlinx.coroutines.sync.withLock
  * coroutine scope themselves.
  *
  * > [!Note]
- * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
+ * > When using Jetpack Compose or Compose Multiplatform, implementations of this interface must guarantee conformance
+ * > to the Stable annotation requirements.
  *
  * ## Example Usage
  *
@@ -62,13 +62,11 @@ import kotlinx.coroutines.sync.withLock
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
  * construct a [StateFlow] from the [ViewModel.onInit] function and the internal [MutableStateFlow].
  */
-@Stable
 public abstract class ViewModel<T : Any>(
     initialStateValue: T,
     private val dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
-) : PlatformViewModel(),
-    RememberObserver {
+) : PlatformViewModel() {
 
     /**
      * Called during the initialization phase to produce a [Flow] of type [T].
@@ -104,12 +102,6 @@ public abstract class ViewModel<T : Any>(
     )
 
     private val mutex = Mutex(locked = false)
-
-    override fun onRemembered() {}
-
-    override fun onForgotten() {}
-
-    override fun onAbandoned() {}
 
     /**
      * Emits an updated state value by applying the given transformation to the current state.
