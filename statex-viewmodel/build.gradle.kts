@@ -17,8 +17,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-
                 implementation(KotlinX.coroutines.core)
 
                 implementation(KotlinX.serialization.core)
@@ -76,7 +74,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mooncloak.kodetools.statex"
+    namespace = "com.mooncloak.kodetools.statex.viewmodel"
     compileSdk = LibraryConstants.Android.compileSdkVersion
 
     defaultConfig {

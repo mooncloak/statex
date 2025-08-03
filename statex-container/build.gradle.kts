@@ -34,7 +34,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mooncloak.kodetools.statex"
+    namespace = "com.mooncloak.kodetools.statex.container"
     compileSdk = LibraryConstants.Android.compileSdkVersion
 
     defaultConfig {
