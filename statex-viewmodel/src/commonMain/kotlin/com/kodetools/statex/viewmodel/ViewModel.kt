@@ -8,9 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -57,16 +54,33 @@ import kotlinx.coroutines.sync.withLock
  * @param [initialStateValue] The initial state model value that will be emitted from the [ViewModel.state]
  * [StateFlow].
  *
- * @param [dispatcher] The [CoroutineDispatcher] used to emit state models via the [emit] functions.
+ * @param [emitDispatcher] The [CoroutineDispatcher] used to emit state models via the [emit] functions.
  *
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
  * construct a [StateFlow] from the [ViewModel.onInit] function and the internal [MutableStateFlow].
  */
 public abstract class ViewModel<T : Any>(
     initialStateValue: T,
-    private val dispatcher: MainCoroutineDispatcher = Dispatchers.Main,
+    private val emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val flowDispatcher: CoroutineDispatcher = emitDispatcher,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
-) : PlatformViewModel() {
+) : PlatformViewModel(),
+    StateContainer<T> {
+
+    private val mutableStateContainer = mutableStateContainerOf(
+        initialStateValue = initialStateValue,
+        flowCoroutineScope = viewModelScope,
+        emitDispatcher = emitDispatcher,
+        flowDispatcher = flowDispatcher,
+        sharingStarted = sharingStarted,
+        onInit = { onInit() }
+    )
+
+    override val initial: StateFlowContainer<T>
+        get() = mutableStateContainer.initial
+
+    override val current: StateFlowContainer<T>
+        get() = mutableStateContainer.current
 
     /**
      * Called during the initialization phase to produce a [Flow] of type [T].
@@ -75,31 +89,6 @@ public abstract class ViewModel<T : Any>(
      * @return A [Flow] of type [T], or an empty flow by default.
      */
     protected open fun onInit(): Flow<T> = emptyFlow()
-
-    private val mutableState = MutableStateFlow<T?>(null)
-
-    /**
-     * Represents the state managed by the ViewModel in the form of a [StateFlow].
-     *
-     * This state is constructed by merging the initial state flow produced by [onInit] and a mutable
-     * state flow that holds non-null values. The resulting flow is scoped to the [viewModelScope]
-     * and starts sharing its updates as determined by the `sharingStarted` parameter. It initializes
-     * with the value provided by `initialStateValue`.
-     *
-     * The [state] flow updates dynamically to reflect state changes triggered through internal mechanisms
-     * and can be observed to react to state transitions accordingly.
-     *
-     * It effectively combines initialization logic, mutable state management, and lifetime scoping
-     * to provide a reactive and consistent model of the ViewModel's state.
-     */
-    public val state: StateFlow<T> = merge(
-        onInit(),
-        mutableState.filterNotNull()
-    ).stateIn(
-        scope = viewModelScope,
-        started = sharingStarted,
-        initialValue = initialStateValue
-    )
 
     private val mutex = Mutex(locked = false)
 
@@ -114,17 +103,7 @@ public abstract class ViewModel<T : Any>(
      */
     @Suppress("MemberVisibilityCanBePrivate")
     protected suspend fun emit(block: suspend (current: T) -> T) {
-        mutex.withLock {
-            val currentValue = state.value
-            val updatedValue = block.invoke(currentValue)
-
-            if (updatedValue != currentValue) {
-                // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-                withContext(dispatcher) {
-                    mutableState.value = updatedValue
-                }
-            }
-        }
+        mutableStateContainer.update(block)
     }
 
     /**
