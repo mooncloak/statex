@@ -15,6 +15,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(project(":statex-container"))
+
                 implementation(KotlinX.coroutines.core)
 
                 implementation(KotlinX.serialization.core)
@@ -72,7 +74,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mooncloak.kodetools.statex.viewmodel"
+    namespace = "com.kodetools.statex.viewmodel"
     compileSdk = LibraryConstants.Android.compileSdkVersion
 
     defaultConfig {
@@ -97,6 +99,8 @@ android {
             jvmTarget = JvmTarget.JVM_11
             freeCompilerArgs.add("-Xexpect-actual-classes")
             freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
+            freeCompilerArgs.add("-Xcontext-parameters")
         }
     }
 }

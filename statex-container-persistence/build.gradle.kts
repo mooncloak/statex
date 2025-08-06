@@ -75,7 +75,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mooncloak.kodetools.statex.persisted"
+    namespace = "com.kodetools.statex.persisted"
     compileSdk = LibraryConstants.Android.compileSdkVersion
 
     defaultConfig {

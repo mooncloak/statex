@@ -1,11 +1,7 @@
 package com.kodetools.statex.container
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SnapshotMutationPolicy
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.structuralEqualityPolicy
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -13,30 +9,21 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * A generic container around [State] values for a component. This encapsulates the [current] [State] value, while
- * retaining the [initial] [State] value, and providing means to listen to state changes outside of Jetpack Compose
- * components (Kotlinx Coroutines [Flow]).
+ * A generic container around [StateFlow] values. This encapsulates the [current] [StateFlow], while also retaining the
+ * [initial] [StateFlow] value.
  *
- * Instead of using a [State] directly, one could use the [StateContainer] and [MutableStateContainer] components to
+ * Instead of using a [StateFlow] directly, one could use the [StateContainer] and [MutableStateContainer] components to
  * encapsulate additional associated state, and handle mutations to the underlying value in a concurrency-safe manner.
- *
- * > [!Note]
- * > Implementations of this interface must guarantee conformance to the [Stable] annotation requirements.
  *
  * @see [MutableStateContainer] for a mutable version of this [StateContainer] interface.
  * @see [mutableStateContainerOf] To create a [MutableStateContainer] instance.
  */
-@Stable
 public interface StateContainer<T> {
 
     /**
-     * The initial [State] when this component was first created or when it was last reset. This value does not change
-     * when the [current] value changes. However, this value may change depending on the [StateContainer]
-     * implementation.
-     *
-     * > [!Note]
-     * > That this is a Compose [State] value and will trigger recompositions of `@Composable` functions when used in
-     * > the context of a `@Composable` function.
+     * The [StateFlow] of the initial value when this component was first created or when it was last reset. This value
+     * does not change when the [current] value changes via [MutableStateContainer.update] function calls. However,
+     * this value may change on invocations of the [MutableStateContainer.reset] function.
      *
      * ## Example Usage
      *
@@ -46,15 +33,10 @@ public interface StateContainer<T> {
      *
      * @see [MutableStateContainer.reset] For a way of resetting this value.
      */
-    public val initial: State<T>
+    public val initial: StateFlow<T>
 
     /**
-     * The current [State] for this component. This value can change over time, so subsequent calls to access this
-     * property can return different values.
-     *
-     * > [!Note]
-     * > That this is a Compose [State] value and will trigger recompositions of `@Composable` functions when used in
-     * > the context of a `@Composable` function.
+     * The [StateFlow] of the current value of this [StateContainer].
      *
      * ## Example Usage
      *
@@ -63,45 +45,12 @@ public interface StateContainer<T> {
      * ```
      *
      * @see [MutableStateContainer.update] For a way of changing this value.
-     * @see [MutableStateContainer.reset] For a way of resetting this value.
+     * @see [MutableStateContainer.reset] For a way of resetting this value back to the initial value.
      */
-    public val current: State<T>
+    public val current: StateFlow<T>
 
     /**
-     * A [Flow] of changes that occur to the [current] value over time. Whenever the [current] [State] value changes,
-     * that new value is emitted through this [Flow]. This is a [StateFlow] which means that it can retain the last
-     * emitted value which can be accessed like so: `container.flow.value`.
-     *
-     * > [!Note]
-     * > This is a "hot" flow, so changes can be emitted to it even when there are no subscribers. Since this is a
-     * > [StateFlow] instance, it can be shared by multiple subscribers.
-     *
-     * ## Example Usage
-     *
-     * ```kotlin
-     * stateContainer.flow.onEach { ... }
-     *                      .launchIn(coroutineScope)
-     * ```
-     */
-    public val flow: StateFlow<T>
-
-    /**
-     * A [State] that determines whether the [current] value ever changed from the [initial] value. Once the [current]
-     * value changes from the [initial] value, this should always return a [State] with a value of `true`, even if the
-     * [current] value changed back to the same value of [initial], until it is reset.
-     *
-     * ## Example Usage
-     *
-     * ```kotlin
-     * stateContainer.changed.value
-     * ```
-     *
-     * @see [MutableStateContainer.reset] To see how to reset a [MutableStateContainer] back to its initial state.
-     */
-    public val changed: State<Boolean>
-
-    /**
-     * Creates a [SnapshotStateModel] of the all the current values within this [StateContainer].
+     * Creates a [SnapshotStateModel] of all the current values within this [StateContainer].
      */
     public suspend fun snapshot(): SnapshotStateModel<T>
 
@@ -109,21 +58,16 @@ public interface StateContainer<T> {
      * Represents the data associated with the current state of a [StateContainer] at a particular
      * instance.
      *
-     * @property [initial] Corresponds to the [StateContainer.initial] value at the moment this
+     * @property [initialStateValue] Corresponds to the [StateContainer.initial] value at the moment this
      * snapshot was taken.
      *
-     * @property [current] Corresponds to the [StateContainer.current] value at the moment this
-     * snapshot was taken.
-     *
-     * @property [changed] Corresponds to the [StateContainer.changed] value at the moment this
+     * @property [currentStateValue] Corresponds to the [StateContainer.current] value at the moment this
      * snapshot was taken.
      */
-    @Immutable
     @Serializable
     public data class SnapshotStateModel<T> public constructor(
-        @SerialName(value = "initial") public val initial: T,
-        @SerialName(value = "current") public val current: T,
-        @SerialName(value = "changed") public val changed: Boolean
+        @SerialName(value = "initial") public val initialStateValue: T,
+        @SerialName(value = "current") public val currentStateValue: T,
     )
 
     public companion object
@@ -138,7 +82,6 @@ public interface StateContainer<T> {
  *
  * @see [mutableStateContainerOf] To create an instance of this interface.
  */
-@Stable
 public interface MutableStateContainer<T> : StateContainer<T> {
 
     /**
@@ -168,15 +111,14 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      *
      * @param [block] The function that will be invoked to obtain the new [current] value.
      */
-    public suspend fun update(block: suspend (current: T) -> T): Unit
+    public suspend fun update(block: suspend (currentStateValue: T) -> T)
 
     /**
-     * Resets the state to the provided [initialValue]. This provides a way to override what the initial
-     * value was by providing an [initialValue] as a parameter.
+     * Resets the state to the value obtained from invoking the provided [block] function.
      *
      * > [!Note]
      * > This is different from invoking the [update] function as it sets all the values back to their initial state,
-     * > as if the initial value was the provided [initialValue].
+     * > as if the initial value was the value obtained from invoking the provided [block] function.
      *
      * > [!Note]
      * > All write operations for a [MutableStateContainer] are safe to access concurrently. This means that if another
@@ -193,16 +135,18 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      * stateContainer.reset(initialValue = newInitialValue)
      * ```
      *
-     * @param [initialValue] The value to set as the initial value. Defaults to [StateContainer.initial].
+     * @param [block] The function that is invoked with the current initial state value and returns the initial state
+     * value to reset this [MutableStateContainer] to. Defaults to a block that returns the current initial state value.
      */
-    public suspend fun reset(initialValue: T = this.initial.value)
+    public suspend fun reset(block: suspend (initialStateValue: T) -> T = { it })
 
     public companion object
 }
 
 /**
- * Updates the [StateContainer.current] value to be the provided [value]. This is a convenience function that delegates
- * to the [MutableStateContainer.update] by providing a higher-order function that simply returns the provided [value].
+ * Updates the [StateContainer.current] value to be the provided [stateValue]. This is a convenience function that
+ * delegates to the [MutableStateContainer.update] by providing a higher-order function that simply returns the
+ * provided [stateValue].
  *
  * > [!Note]
  * > All write operations for a [MutableStateContainer] are safe to access concurrently. This means that if another
@@ -212,54 +156,100 @@ public interface MutableStateContainer<T> : StateContainer<T> {
  * ## Example Usage
  *
  * ```kotlin
- * stateContainer.update(value = newValue)
+ * stateContainer.update(newValue)
  * ```
  *
- * @param [value] The value to change the [StateContainer.current] value to.
+ * @param [stateValue] The value to change the [StateContainer.current] value to.
  */
-public suspend fun <T> MutableStateContainer<T>.update(value: T): Unit =
-    this.update { value }
+public suspend fun <T> MutableStateContainer<T>.update(stateValue: T): Unit =
+    this.update { stateValue }
 
 /**
- * Creates a [MutableStateContainer] with the provided [initialValue].
+ * Resets the state to the provided [initialStateValue]. This provides a way to override what the initial value was by
+ * providing an [initialStateValue] as a parameter.
  *
- * @param [initialValue] The default [StateContainer.initial] value and the starting
- * [StateContainer.current] value. Note that this value can change over time with a
- * [MutableStateContainer], if the [MutableStateContainer.reset] function is invoked.
+ * > [!Note]
+ * > This is different from invoking the [update] function as it sets all the values back to their initial state,
+ * > as if the initial value was the provided [initialStateValue].
  *
- * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
- * [MutableState] instances.
- *
- * @param [dispatcher] The [MainCoroutineDispatcher] that is used to dispatch the changes to the state. Defaults to
- * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
- * platforms.
+ * > [!Note]
+ * > All write operations for a [MutableStateContainer] are safe to access concurrently. This means that if another
+ * > mutation is currently running while this function is invoked, then this function will suspend until that
+ * > function has finished.
  *
  * ## Example Usage
  *
  * ```kotlin
- * val stateContainer = mutableStateContainerOf(true)
+ * // Reset back to the initial value when creating this StateContainer instance.
+ * stateContainer.reset()
+ *
+ * // Reset to a new initial value.
+ * stateContainer.reset(newInitialValue)
+ * ```
+ *
+ * @param [initialStateValue] The value to set as the initial value. Defaults to [StateContainer.initial].
+ */
+public suspend fun <T> MutableStateContainer<T>.reset(initialStateValue: T) {
+    this.reset { initialStateValue }
+}
+
+/**
+ * Creates a [MutableStateContainer] with the provided [initialStateValue].
+ *
+ * @param [initialStateValue] The default [StateContainer.initial] value and the starting [StateContainer.current]
+ * value. Note that this value can change over time with a [MutableStateContainer], if the
+ * [MutableStateContainer.reset] function is invoked.
+ *
+ * @param [flowCoroutineScope] The [CoroutineScope] that is used to convert a [Flow] to a [StateFlow] for the
+ * [StateContainer.current] property via the [Flow.stateIn] function.
+ *
+ * @param [emitDispatcher] The [CoroutineDispatcher] that is used to dispatch the changes to the states. Defaults to
+ * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
+ * platforms.
+ *
+ * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
+ * [StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
+ * before [Flow.stateIn] usage, when combining the [onInit] and internal [MutableStateFlow] usage for the
+ * [StateContainer.current] value.
+ *
+ * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
+ * construct a [StateFlow] from the [onInit] function and the internal [MutableStateFlow].
+ *
+ * @param [onInit] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
+ * is typically used in tandem with an internal [MutableStateFlow] and the [Flow.stateIn] function.
+ *
+ * ## Example Usage
+ *
+ * ```kotlin
+ * val stateContainer = mutableStateContainerOf(
+ *     initialStateValue = true,
+ *     flowCoroutineScope = coroutineScope
+ * )
  *
  * stateContainer.current.value // true
  * stateContainer.initial.value // true
- * stateContainer.changed.value // false
  *
  * // Mutate the value
- * stateContainer.change(value = false)
+ * stateContainer.update(false)
  *
  * stateContainer.current.value // false
  * stateContainer.initial.value // true
- * stateContainer.changed.value // true
  * ```
  */
-@Stable
 public fun <T> mutableStateContainerOf(
-    initialValue: T,
-    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
-    dispatcher: MainCoroutineDispatcher = Dispatchers.Main
+    initialStateValue: T,
+    flowCoroutineScope: CoroutineScope,
+    emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    flowDispatcher: CoroutineDispatcher = emitDispatcher,
+    sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
+    onInit: () -> Flow<T> = { emptyFlow() }
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
-    initialValue = initialValue,
-    policy = policy,
-    dispatcher = dispatcher
+    initialStateValue = initialStateValue,
+    flowCoroutineScope = flowCoroutineScope,
+    emitDispatcher = emitDispatcher,
+    flowDispatcher = flowDispatcher,
+    sharingStarted = sharingStarted,
+    onInit = onInit
 )
 
 /**
@@ -268,41 +258,60 @@ public fun <T> mutableStateContainerOf(
  * @param [snapshot] The [StateContainer.SnapshotStateModel] value containing the values to use
  * initially for the returned [MutableStateContainer] instance.
  *
- * @param [policy] The [SnapshotMutationPolicy] that is used to construct the underlying
- * [MutableState] instances.
+ * @param [flowCoroutineScope] The [CoroutineScope] that is used to convert a [Flow] to a [StateFlow] for the
+ * [StateContainer.current] property via the [Flow.stateIn] function.
  *
- * @param [dispatcher] The [MainCoroutineDispatcher] that is used to dispatch the changes to the state. Defaults to
+ * @param [emitDispatcher] The [CoroutineDispatcher] that is used to dispatch the changes to the states. Defaults to
  * [Dispatchers.Main]. This could be updated to [Dispatchers.Main] [MainCoroutineDispatcher.immediate] on supported
  * platforms.
+ *
+ * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
+ * [StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
+ * before [Flow.stateIn] usage, when combining the [onInit] and internal [MutableStateFlow] usage for the
+ * [StateContainer.current] value.
+ *
+ * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
+ * construct a [StateFlow] from the [onInit] function and the internal [MutableStateFlow].
+ *
+ * @param [onInit] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
+ * is typically used in tandem with an internal [MutableStateFlow] and the [Flow.stateIn] function.
  *
  * ## Example Usage
  *
  * ```kotlin
- * val initialStateContainer = mutableStateContainer(true)
+ * val initialStateContainer = mutableStateContainer(
+ *     initialStateValue = true,
+ *     flowCoroutineScope = coroutineScope
+ * )
  * val snapshot = initialStateContainer.snapshot()
- * val stateContainer = mutableStateContainerOf(snapshot)
+ * val stateContainer = mutableStateContainerOf(
+ *     snapshot = snapshot,
+ *     flowCoroutineScope = coroutineScope
+ * )
  *
  * stateContainer.current.value // true
  * stateContainer.initial.value // true
- * stateContainer.changed.value // false
  *
  * // Mutate the value
- * stateContainer.change(value = false)
+ * stateContainer.update(false)
  *
  * stateContainer.current.value // false
  * stateContainer.initial.value // true
- * stateContainer.changed.value // true
  * ```
  */
-@Stable
 public fun <T> mutableStateContainerOf(
     snapshot: StateContainer.SnapshotStateModel<T>,
-    policy: SnapshotMutationPolicy<T> = structuralEqualityPolicy(),
-    dispatcher: MainCoroutineDispatcher = Dispatchers.Main
+    flowCoroutineScope: CoroutineScope,
+    emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    flowDispatcher: CoroutineDispatcher = emitDispatcher,
+    sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
+    onInit: () -> Flow<T> = { emptyFlow() }
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
-    initialValue = snapshot.initial,
-    currentValue = snapshot.current,
-    changed = snapshot.changed,
-    policy = policy,
-    dispatcher = dispatcher
+    initialStateValue = snapshot.initialStateValue,
+    currentStateValue = snapshot.currentStateValue,
+    flowCoroutineScope = flowCoroutineScope,
+    emitDispatcher = emitDispatcher,
+    flowDispatcher = flowDispatcher,
+    sharingStarted = sharingStarted,
+    onInit = onInit
 )

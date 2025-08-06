@@ -1,13 +1,16 @@
 package com.kodetools.statex.container
 
-import androidx.compose.runtime.SnapshotMutationPolicy
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import kotlinx.coroutines.MainCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -15,40 +18,42 @@ import kotlinx.coroutines.withContext
 /**
  * A default [MutableStateContainer] implementation.
  */
-@Stable
 public class DefaultMutableStateContainer<T> internal constructor(
-    initialValue: T,
-    currentValue: T = initialValue,
-    changed: Boolean = false,
-    public val policy: SnapshotMutationPolicy<T>,
-    private val dispatcher: MainCoroutineDispatcher
+    initialStateValue: T,
+    currentStateValue: T = initialStateValue,
+    flowCoroutineScope: CoroutineScope,
+    private val emitDispatcher: CoroutineDispatcher,
+    flowDispatcher: CoroutineDispatcher,
+    sharingStarted: SharingStarted = SharingStarted.Companion.WhileSubscribed(5_000),
+    onInit: () -> Flow<T> = { emptyFlow() }
 ) : MutableStateContainer<T> {
 
-    override val initial: State<T>
-        get() = mutableInitial
+    private val initialMutableStateFlow = MutableStateFlow(initialStateValue)
+    private val currentMutableStateFlow = MutableStateFlow(currentStateValue)
 
-    override val current: State<T>
-        get() = mutableCurrent
+    override val initial: StateFlow<T> = initialMutableStateFlow.asStateFlow()
 
-    override val flow: StateFlow<T>
-        get() = mutableFlow.asStateFlow()
-
-    override val changed: State<Boolean>
-        get() = mutableChanged
-
-    private val mutableInitial = mutableStateOf(initialValue, policy)
-    private val mutableCurrent = mutableStateOf(currentValue, policy)
-    private val mutableChanged = mutableStateOf(changed)
-    private val mutableFlow = MutableStateFlow(value = initialValue)
+    override val current: StateFlow<T> =
+        merge(
+            onInit(),
+            currentMutableStateFlow
+        ).flowOn(flowDispatcher)
+            .stateIn(
+                scope = flowCoroutineScope,
+                started = sharingStarted,
+                initialValue = initialStateValue
+            )
 
     private val mutex = Mutex(locked = false)
 
     override suspend fun snapshot(): StateContainer.SnapshotStateModel<T> =
         mutex.withLock {
+            val initialStateValue = initial.value
+            val currentStateValue = current.value
+
             StateContainer.SnapshotStateModel(
-                initial = initial.value,
-                current = current.value,
-                changed = changed.value
+                initialStateValue = initialStateValue,
+                currentStateValue = currentStateValue
             )
         }
 
@@ -58,23 +63,21 @@ public class DefaultMutableStateContainer<T> internal constructor(
 
             if (value != current.value) {
                 // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-                withContext(dispatcher) {
-                    mutableCurrent.value = value
-                    mutableChanged.value = true
-                    mutableFlow.value = value
+                withContext(emitDispatcher) {
+                    currentMutableStateFlow.value = value
                 }
             }
         }
     }
 
-    override suspend fun reset(initialValue: T) {
+    override suspend fun reset(block: suspend (initial: T) -> T) {
         mutex.withLock {
+            val value = block.invoke(initial.value)
+
             // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
-            withContext(dispatcher) {
-                mutableInitial.value = initialValue
-                mutableCurrent.value = initialValue
-                mutableChanged.value = false
-                mutableFlow.value = initialValue
+            withContext(emitDispatcher) {
+                initialMutableStateFlow.value = value
+                currentMutableStateFlow.value = value
             }
         }
     }
@@ -83,25 +86,21 @@ public class DefaultMutableStateContainer<T> internal constructor(
         if (this === other) return true
         if (other !is DefaultMutableStateContainer<*>) return false
 
-        if (mutableInitial != other.mutableInitial) return false
-        if (mutableCurrent != other.mutableCurrent) return false
-        if (mutableChanged != other.mutableChanged) return false
-        if (mutableFlow != other.mutableFlow) return false
-        if (policy != other.policy) return false
+        if (emitDispatcher != other.emitDispatcher) return false
+        if (initial != other.initial) return false
+        if (current != other.current) return false
 
         return mutex == other.mutex
     }
 
     override fun hashCode(): Int {
-        var result = mutableInitial.hashCode()
-        result = 31 * result + mutableCurrent.hashCode()
-        result = 31 * result + mutableChanged.hashCode()
-        result = 31 * result + mutableFlow.hashCode()
+        var result = emitDispatcher.hashCode()
+        result = 31 * result + initial.hashCode()
+        result = 31 * result + current.hashCode()
         result = 31 * result + mutex.hashCode()
-        result = 31 * result + policy.hashCode()
         return result
     }
 
     override fun toString(): String =
-        "DefaultMutableStateContainer(initial=$initial, current=$current, flow=$flow, changed=$changed, policy=$policy)"
+        "DefaultMutableStateContainer(emitDispatcher=$emitDispatcher, initial=$initial, current=$current, mutex=$mutex)"
 }

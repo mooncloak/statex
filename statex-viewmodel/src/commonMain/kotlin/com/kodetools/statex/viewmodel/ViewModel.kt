@@ -2,14 +2,15 @@
 
 package com.kodetools.statex.viewmodel
 
+import com.kodetools.statex.container.MutableStateContainer
+import com.kodetools.statex.container.StateContainer
+import com.kodetools.statex.container.mutableStateContainerOf
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 /**
  * A design pattern level component that encapsulates state management and application logic for a user interface
@@ -39,13 +40,13 @@ import kotlinx.coroutines.sync.withLock
  *
  *    fun load() {
  *        viewModelScope.launch {
- *            emit { current -> current.copy(isLoading = true) }
+ *            uiState.mutable.update { current -> current.copy(isLoading = true) }
  *
  *            val items = withContext(Dispatchers.IO) {
  *                feedApi.load()
  *            }
  *
- *            emit { current -> current.copy(isLoading = false, items = items) }
+ *            uiState.mutable.update { current -> current.copy(isLoading = false, items = items) }
  *        }
  *    }
  * }
@@ -56,31 +57,27 @@ import kotlinx.coroutines.sync.withLock
  *
  * @param [emitDispatcher] The [CoroutineDispatcher] used to emit state models via the [emit] functions.
  *
+ * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
+ * [com.kodetools.statex.container.StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
+ * before [Flow.stateIn] usage.
+ *
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
- * construct a [StateFlow] from the [ViewModel.onInit] function and the internal [MutableStateFlow].
+ * construct a [StateFlow] from the [ViewModel.onInitUIState] function and the internal [MutableStateFlow].
  */
 public abstract class ViewModel<T : Any>(
     initialStateValue: T,
     private val emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
     private val flowDispatcher: CoroutineDispatcher = emitDispatcher,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
-) : PlatformViewModel(),
-    StateContainer<T> {
+) : PlatformViewModel() {
 
-    private val mutableStateContainer = mutableStateContainerOf(
+    public val uiState: ViewModelStateContainer<T> = viewModelStateContainerOf(
         initialStateValue = initialStateValue,
-        flowCoroutineScope = viewModelScope,
         emitDispatcher = emitDispatcher,
         flowDispatcher = flowDispatcher,
         sharingStarted = sharingStarted,
-        onInit = { onInit() }
+        onInit = ::onInitUIState
     )
-
-    override val initial: StateFlowContainer<T>
-        get() = mutableStateContainer.initial
-
-    override val current: StateFlowContainer<T>
-        get() = mutableStateContainer.current
 
     /**
      * Called during the initialization phase to produce a [Flow] of type [T].
@@ -88,35 +85,51 @@ public abstract class ViewModel<T : Any>(
      *
      * @return A [Flow] of type [T], or an empty flow by default.
      */
-    protected open fun onInit(): Flow<T> = emptyFlow()
-
-    private val mutex = Mutex(locked = false)
+    protected open fun onInitUIState(): Flow<T> = emptyFlow()
 
     /**
-     * Emits an updated state value by applying the given transformation to the current state.
+     * Obtains a [com.kodetools.statex.container.MutableStateContainer] instance for this [ViewModelStateContainer].
      *
-     * The function ensures thread-safety using a mutex lock and updates the state in a manner
-     * that is compatible with Compose's State management.
-     *
-     * @param [block] A suspending function that takes the current state of type [T] as input
-     * and returns the updated state of type [T].
+     * This is a convenience property to access the internal [com.kodetools.statex.container.MutableStateContainer] [ViewModelStateContainer.delegate]
+     * property. This approach was chosen to allow [com.kodetools.statex.viewmodel.ViewModel] subclasses to be able to
+     * mutate their [com.kodetools.statex.container.StateContainer]s but only expose the read-only API.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected suspend fun emit(block: suspend (current: T) -> T) {
-        mutableStateContainer.update(block)
-    }
+    protected val <T> ViewModelStateContainer<T>.mutable: MutableStateContainer<T>
+        get() = this.delegate
 
-    /**
-     * Emits a new state value by directly setting the provided value.
-     *
-     * This function is a shortcut for updating the state to a specific value
-     * without needing a transformation block. It ensures thread-safe updates
-     * to the state and integrates seamlessly with Compose's State management.
-     *
-     * @param [value] The new state value of type [T] to be emitted.
-     */
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected suspend fun emit(value: T): Unit = emit { value }
+    protected fun viewModelStateContainerOf(
+        initialStateValue: T,
+        emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
+        flowDispatcher: CoroutineDispatcher = emitDispatcher,
+        sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
+        onInit: () -> Flow<T> = { emptyFlow() }
+    ): ViewModelStateContainer<T> = ViewModelStateContainer(
+        delegate = mutableStateContainerOf(
+            initialStateValue = initialStateValue,
+            flowCoroutineScope = viewModelScope,
+            emitDispatcher = emitDispatcher,
+            flowDispatcher = flowDispatcher,
+            sharingStarted = sharingStarted,
+            onInit = onInit
+        )
+    )
+
+    protected fun viewModelStateContainerOf(
+        snapshot: StateContainer.SnapshotStateModel<T>,
+        emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
+        flowDispatcher: CoroutineDispatcher = emitDispatcher,
+        sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
+        onInit: () -> Flow<T> = { emptyFlow() }
+    ): ViewModelStateContainer<T> = ViewModelStateContainer(
+        delegate = mutableStateContainerOf(
+            snapshot = snapshot,
+            flowCoroutineScope = viewModelScope,
+            emitDispatcher = emitDispatcher,
+            flowDispatcher = flowDispatcher,
+            sharingStarted = sharingStarted,
+            onInit = onInit
+        )
+    )
 
     public companion object
 }

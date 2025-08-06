@@ -1,15 +1,12 @@
 package com.kodetools.statex.container.persistence
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.kodetools.statex.container.StateContainer
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -28,20 +25,14 @@ public class DefaultPersistableStateContainer<T> @PublishedApi internal construc
     private val dispatcher: MainCoroutineDispatcher
 ) : PersistableStateContainer<T> {
 
-    override val initial: State<T>
+    override val initial: StateFlow<T>
         get() = mutableInitial
 
-    override val current: State<T>
+    override val current: StateFlow<T>
         get() = mutableCurrent
 
-    override val flow: StateFlow<T>
-        get() = mutableFlow.asStateFlow()
-
-    override val changed: State<Boolean>
-        get() = mutableChanged
-
-    private val mutableInitial: MutableState<T>
-    private val mutableCurrent: MutableState<T>
+    private val mutableInitial: MutableStateFlow<T>
+    private val mutableCurrent: MutableStateFlow<T>
     private val mutableChanged = mutableStateOf(false)
     private val mutableFlow: MutableStateFlow<T>
 
@@ -55,17 +46,16 @@ public class DefaultPersistableStateContainer<T> @PublishedApi internal construc
             serializersModule = serializersModule
         )
 
-        mutableInitial = mutableStateOf(initialValue, policy)
-        mutableCurrent = mutableStateOf(initialValue, policy)
+        mutableInitial = MutableStateFlow(initialValue)
+        mutableCurrent = MutableStateFlow(initialValue)
         mutableFlow = MutableStateFlow(value = initialValue)
     }
 
     override suspend fun snapshot(): StateContainer.SnapshotStateModel<T> =
         mutex.withLock {
             StateContainer.SnapshotStateModel(
-                initial = initial.value,
-                current = current.value,
-                changed = changed.value
+                initialStateValue = initial.value,
+                currentStateValue = current.value,
             )
         }
 
@@ -91,20 +81,22 @@ public class DefaultPersistableStateContainer<T> @PublishedApi internal construc
         }
     }
 
-    override suspend fun reset(initialValue: T) {
+    override suspend fun reset(block: suspend (T) -> T) {
         mutex.withLock {
+            val initialStateValue = block.invoke(initial.value)
+
             storage.set(
                 key = key,
-                value = initialValue,
+                value = initialStateValue,
                 serializer = serializer
             )
 
             // Update from the appropriate thread for Compose State to make sure that it gets handled correctly.
             withContext(dispatcher) {
-                mutableInitial.value = initialValue
-                mutableCurrent.value = initialValue
+                mutableInitial.value = initialStateValue
+                mutableCurrent.value = initialStateValue
                 mutableChanged.value = false
-                mutableFlow.value = initialValue
+                mutableFlow.value = initialStateValue
             }
         }
     }
@@ -133,5 +125,5 @@ public class DefaultPersistableStateContainer<T> @PublishedApi internal construc
     }
 
     override fun toString(): String =
-        "DefaultPersistableStateContainer(initial=$initial, current=$current, flow=$flow, changed=$changed, policy=$policy)"
+        "DefaultPersistableStateContainer(initial=$initial, current=$current, policy=$policy)"
 }

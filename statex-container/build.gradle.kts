@@ -5,8 +5,6 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose")
     id("maven-publish")
     id("org.jetbrains.dokka")
     id("statex.multiplatform")
@@ -17,8 +15,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-
                 implementation(KotlinX.coroutines.core)
 
                 implementation(KotlinX.serialization.core)
@@ -34,7 +30,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mooncloak.kodetools.statex.container"
+    namespace = "com.kodetools.statex.container"
     compileSdk = LibraryConstants.Android.compileSdkVersion
 
     defaultConfig {
