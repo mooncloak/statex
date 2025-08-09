@@ -5,8 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 /**
  * A generic container around [StateFlow] values. This encapsulates the [current] [StateFlow], while also retaining the
@@ -64,10 +62,9 @@ public interface StateContainer<T> {
      * @property [currentStateValue] Corresponds to the [StateContainer.current] value at the moment this
      * snapshot was taken.
      */
-    @Serializable
     public data class SnapshotStateModel<T> public constructor(
-        @SerialName(value = "initial") public val initialStateValue: T,
-        @SerialName(value = "current") public val currentStateValue: T,
+        public val initialStateValue: T,
+        public val currentStateValue: T,
     )
 
     public companion object

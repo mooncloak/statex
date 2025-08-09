@@ -17,7 +17,6 @@ kotlin {
             dependencies {
                 // Using version catalog
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.serialization.core)
             }
         }
 
