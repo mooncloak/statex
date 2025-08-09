@@ -5,17 +5,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-public actual abstract class PlatformViewModel internal actual constructor() {
+public actual abstract class PlatformViewModel {
 
-    private val keyedCloseables = mutableMapOf<String, AutoCloseable>()
-    private val closeables = mutableListOf<AutoCloseable>()
+    private val coroutineScope: CoroutineScope
 
-    protected actual open val viewModelScope: CoroutineScope =
-        object : CoroutineScope {
+    internal actual constructor() : super() {
+        coroutineScope = object : CoroutineScope {
 
             override val coroutineContext: CoroutineContext
                 get() = SupervisorJob() + Dispatchers.Main
         }
+    }
+
+    internal actual constructor(viewModelScope: CoroutineScope) : super() {
+        coroutineScope = viewModelScope
+    }
+
+    private val keyedCloseables = mutableMapOf<String, AutoCloseable>()
+    private val closeables = mutableListOf<AutoCloseable>()
+
+    protected actual open val viewModelScope: CoroutineScope
+        get() = coroutineScope
 
     protected actual open fun onCleared() {
     }

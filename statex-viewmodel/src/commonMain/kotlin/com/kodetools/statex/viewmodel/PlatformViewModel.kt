@@ -11,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
  */
 public expect abstract class PlatformViewModel internal constructor() {
 
+    internal constructor(viewModelScope: CoroutineScope)
+
     protected open val viewModelScope: CoroutineScope
 
     protected open fun onCleared()
