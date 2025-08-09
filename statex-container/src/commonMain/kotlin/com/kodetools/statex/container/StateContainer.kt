@@ -129,7 +129,7 @@ public interface MutableStateContainer<T> : StateContainer<T> {
      * stateContainer.reset()
      *
      * // Reset to a new initial value.
-     * stateContainer.reset(initialValue = newInitialValue)
+     * stateContainer.reset { newInitialValue }
      * ```
      *
      * @param [block] The function that is invoked with the current initial state value and returns the initial state
