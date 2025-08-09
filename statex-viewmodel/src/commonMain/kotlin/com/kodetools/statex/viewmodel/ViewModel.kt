@@ -120,7 +120,7 @@ public abstract class ViewModel<T : Any>(
      * [com.kodetools.statex.viewmodel.ViewModel] subclasses to be able to mutate their
      * [com.kodetools.statex.container.StateContainer]s but only expose the read-only API publicly.
      */
-    protected suspend fun <T> ViewModelStateContainer<T>.mutate(
+    protected suspend fun <T> ViewModelStateContainer<T>.withMutable(
         block: suspend MutableStateContainer<T>.() -> Unit
     ) {
         this.delegate.block()
