@@ -25,7 +25,7 @@ public class DefaultMutableStateContainer<T> internal constructor(
     private val emitDispatcher: CoroutineDispatcher,
     flowDispatcher: CoroutineDispatcher,
     sharingStarted: SharingStarted = SharingStarted.Companion.WhileSubscribed(5_000),
-    onInit: () -> Flow<T> = { emptyFlow() }
+    upstreamFlow: () -> Flow<T> = { emptyFlow() }
 ) : MutableStateContainer<T> {
 
     private val initialMutableStateFlow = MutableStateFlow(initialStateValue)
@@ -35,7 +35,7 @@ public class DefaultMutableStateContainer<T> internal constructor(
 
     override val current: StateFlow<T> =
         merge(
-            onInit(),
+            upstreamFlow(),
             currentMutableStateFlow
         ).flowOn(flowDispatcher)
             .stateIn(

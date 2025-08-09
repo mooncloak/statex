@@ -206,13 +206,13 @@ public suspend fun <T> MutableStateContainer<T>.reset(initialStateValue: T) {
  *
  * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
  * [StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
- * before [Flow.stateIn] usage, when combining the [onInit] and internal [MutableStateFlow] usage for the
+ * before [Flow.stateIn] usage, when combining the [upstreamFlow] and internal [MutableStateFlow] usage for the
  * [StateContainer.current] value.
  *
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
- * construct a [StateFlow] from the [onInit] function and the internal [MutableStateFlow].
+ * construct a [StateFlow] from the [upstreamFlow] function and the internal [MutableStateFlow].
  *
- * @param [onInit] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
+ * @param [upstreamFlow] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
  * is typically used in tandem with an internal [MutableStateFlow] and the [Flow.stateIn] function.
  *
  * ## Example Usage
@@ -239,14 +239,14 @@ public fun <T> mutableStateContainerOf(
     emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
     flowDispatcher: CoroutineDispatcher = emitDispatcher,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
-    onInit: () -> Flow<T> = { emptyFlow() }
+    upstreamFlow: () -> Flow<T> = { emptyFlow() }
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
     initialStateValue = initialStateValue,
     flowCoroutineScope = flowCoroutineScope,
     emitDispatcher = emitDispatcher,
     flowDispatcher = flowDispatcher,
     sharingStarted = sharingStarted,
-    onInit = onInit
+    upstreamFlow = upstreamFlow
 )
 
 /**
@@ -264,13 +264,13 @@ public fun <T> mutableStateContainerOf(
  *
  * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
  * [StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
- * before [Flow.stateIn] usage, when combining the [onInit] and internal [MutableStateFlow] usage for the
+ * before [Flow.stateIn] usage, when combining the [upstreamFlow] and internal [MutableStateFlow] usage for the
  * [StateContainer.current] value.
  *
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
- * construct a [StateFlow] from the [onInit] function and the internal [MutableStateFlow].
+ * construct a [StateFlow] from the [upstreamFlow] function and the internal [MutableStateFlow].
  *
- * @param [onInit] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
+ * @param [upstreamFlow] The function that returns a initial [Flow] of values for the [StateContainer.current] property. This
  * is typically used in tandem with an internal [MutableStateFlow] and the [Flow.stateIn] function.
  *
  * ## Example Usage
@@ -302,7 +302,7 @@ public fun <T> mutableStateContainerOf(
     emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
     flowDispatcher: CoroutineDispatcher = emitDispatcher,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
-    onInit: () -> Flow<T> = { emptyFlow() }
+    upstreamFlow: () -> Flow<T> = { emptyFlow() }
 ): MutableStateContainer<T> = DefaultMutableStateContainer(
     initialStateValue = snapshot.initialStateValue,
     currentStateValue = snapshot.currentStateValue,
@@ -310,5 +310,5 @@ public fun <T> mutableStateContainerOf(
     emitDispatcher = emitDispatcher,
     flowDispatcher = flowDispatcher,
     sharingStarted = sharingStarted,
-    onInit = onInit
+    upstreamFlow = upstreamFlow
 )

@@ -62,7 +62,7 @@ import kotlinx.coroutines.flow.emptyFlow
  * before [Flow.stateIn] usage.
  *
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
- * construct a [StateFlow] from the [ViewModel.onInitUIState] function and the internal [MutableStateFlow].
+ * construct a [StateFlow] from the [ViewModel.uiStateUpstreamFlow] function and the internal [MutableStateFlow].
  */
 public abstract class ViewModel<T : Any>(
     initialStateValue: T,
@@ -76,7 +76,7 @@ public abstract class ViewModel<T : Any>(
         emitDispatcher = emitDispatcher,
         flowDispatcher = flowDispatcher,
         sharingStarted = sharingStarted,
-        onInit = ::onInitUIState
+        upstreamFlow = ::uiStateUpstreamFlow
     )
 
     /**
@@ -85,7 +85,7 @@ public abstract class ViewModel<T : Any>(
      *
      * @return A [Flow] of type [T], or an empty flow by default.
      */
-    protected open fun onInitUIState(): Flow<T> = emptyFlow()
+    protected open fun uiStateUpstreamFlow(): Flow<T> = emptyFlow()
 
     /**
      * Obtains a [com.kodetools.statex.container.MutableStateContainer] instance for this [ViewModelStateContainer].
@@ -102,7 +102,7 @@ public abstract class ViewModel<T : Any>(
         emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
         flowDispatcher: CoroutineDispatcher = emitDispatcher,
         sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
-        onInit: () -> Flow<T> = { emptyFlow() }
+        upstreamFlow: () -> Flow<T> = { emptyFlow() }
     ): ViewModelStateContainer<T> = ViewModelStateContainer(
         delegate = mutableStateContainerOf(
             initialStateValue = initialStateValue,
@@ -110,7 +110,7 @@ public abstract class ViewModel<T : Any>(
             emitDispatcher = emitDispatcher,
             flowDispatcher = flowDispatcher,
             sharingStarted = sharingStarted,
-            onInit = onInit
+            upstreamFlow = upstreamFlow
         )
     )
 
@@ -119,7 +119,7 @@ public abstract class ViewModel<T : Any>(
         emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
         flowDispatcher: CoroutineDispatcher = emitDispatcher,
         sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
-        onInit: () -> Flow<T> = { emptyFlow() }
+        upstreamFlow: () -> Flow<T> = { emptyFlow() }
     ): ViewModelStateContainer<T> = ViewModelStateContainer(
         delegate = mutableStateContainerOf(
             snapshot = snapshot,
@@ -127,7 +127,7 @@ public abstract class ViewModel<T : Any>(
             emitDispatcher = emitDispatcher,
             flowDispatcher = flowDispatcher,
             sharingStarted = sharingStarted,
-            onInit = onInit
+            upstreamFlow = upstreamFlow
         )
     )
 
