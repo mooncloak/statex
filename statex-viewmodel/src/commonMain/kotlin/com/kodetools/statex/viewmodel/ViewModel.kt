@@ -11,14 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * A design pattern level component that encapsulates state management and application logic for a user interface
  * component or concept, such as a "screen" within an application. A [ViewModel] follows the uni-directional data flow
  * (UDF) approach recommended by the Jetpack Compose documentation.
  *
- * A [ViewModel] exposes a single [StateFlow] of the wrapped [State] model values via the [state] property. This
- * [state] property provides a stream of state changes that occur as a result of the application logic within the
+ * A [ViewModel] exposes a single [StateFlow] of the wrapped state model values via the [uiState] property. This
+ * [uiState] property provides a stream of state changes that occur as a result of the application logic within the
  * [ViewModel] function, and can be subscribed to inside or outside the context of a `@Composable` function.
  *
  * Functions within a [ViewModel] should handle performing application logic, coordinating and invoking business logic,
@@ -52,10 +54,10 @@ import kotlinx.coroutines.flow.emptyFlow
  * }
  * ```
  *
- * @param [initialStateValue] The initial state model value that will be emitted from the [ViewModel.state]
- * [StateFlow].
+ * @param [initialStateValue] The initial state model value for the [ViewModel.uiState] [StateContainer].
  *
- * @param [emitDispatcher] The [CoroutineDispatcher] used to emit state models via the [emit] functions.
+ * @param [emitDispatcher] The [CoroutineDispatcher] used to emit state models via the [MutableStateContainer.update]
+ * function invocations.
  *
  * @param [flowDispatcher] The [CoroutineDispatcher] that is used to listen to the changes for the
  * [com.kodetools.statex.container.StateContainer.current] [StateFlow] property. This is typically used internally with a [Flow.flowOn] function call,
@@ -71,6 +73,17 @@ public abstract class ViewModel<T : Any>(
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000)
 ) : PlatformViewModel() {
 
+    /**
+     * Represents the state container for managing UI state within the ViewModel.
+     *
+     * This property defines an instance of [ViewModelStateContainer], which is responsible for holding and managing
+     * the state of type [T] throughout the lifecycle of the ViewModel. It utilizes a combination of declarative state
+     * management and reactive flows, allowing state changes to be observed and updated efficiently.
+     *
+     * This container is tied to the [viewModelScope] of the ViewModel, ensuring proper lifecycle management. The
+     * ability to mutate the state is restricted to [ViewModel] subclasses, while external consumers can only observe
+     * the state.
+     */
     public val uiState: ViewModelStateContainer<T> = viewModelStateContainerOf(
         initialStateValue = initialStateValue,
         emitDispatcher = emitDispatcher,
@@ -97,6 +110,31 @@ public abstract class ViewModel<T : Any>(
     protected val <T> ViewModelStateContainer<T>.mutable: MutableStateContainer<T>
         get() = this.delegate
 
+    /**
+     * Creates an instance of [ViewModelStateContainer] with the provided configuration values for state management and
+     * flow handling.
+     *
+     * A [ViewModelStateContainer] is a [StateContainer] tied to the [viewModelScope] of the encapsulating [ViewModel],
+     * and only exposes the [MutableStateContainer] via the protected property [mutable] so that only [ViewModel]
+     * subclasses can mutate the state.
+     *
+     * @param [initialStateValue] The initial state value of type [T] that serves as the starting point for the
+     * container.
+     *
+     * @param [emitDispatcher] The [CoroutineDispatcher] used for dispatching changes to the states. Defaults to
+     * [Dispatchers.Main].
+     *
+     * @param [flowDispatcher] The [CoroutineDispatcher] used for observing and processing flow emissions internally.
+     * Defaults to the value of [emitDispatcher].
+     *
+     * @param [sharingStarted] The strategy that defines how the state flow is started and stopped. Defaults to
+     * [SharingStarted.WhileSubscribed] with a timeout of 5,000 milliseconds.
+     *
+     * @param [upstreamFlow] A lambda function that provides an initial [Flow] of values to be combined with internal
+     * state management. Defaults to an empty flow.
+     *
+     * @return An instance of [ViewModelStateContainer] configured with the provided parameters.
+     */
     protected fun viewModelStateContainerOf(
         initialStateValue: T,
         emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
@@ -114,6 +152,31 @@ public abstract class ViewModel<T : Any>(
         )
     )
 
+    /**
+     * Creates an instance of [ViewModelStateContainer] with the provided configuration values for state management and
+     * flow handling.
+     *
+     * A [ViewModelStateContainer] is a [StateContainer] tied to the [viewModelScope] of the encapsulating [ViewModel],
+     * and only exposes the [MutableStateContainer] via the protected property [mutable] so that only [ViewModel]
+     * subclasses can mutate the state.
+     *
+     * @param [snapshot] The [StateContainer.SnapshotStateModel] instance containing the initial and current state
+     * values that serves as the starting point for the container.
+     *
+     * @param [emitDispatcher] The [CoroutineDispatcher] used for dispatching changes to the states. Defaults to
+     * [Dispatchers.Main].
+     *
+     * @param [flowDispatcher] The [CoroutineDispatcher] used for observing and processing flow emissions internally.
+     * Defaults to the value of [emitDispatcher].
+     *
+     * @param [sharingStarted] The strategy that defines how the state flow is started and stopped. Defaults to
+     * [SharingStarted.WhileSubscribed] with a timeout of 5,000 milliseconds.
+     *
+     * @param [upstreamFlow] A lambda function that provides an initial [Flow] of values to be combined with internal
+     * state management. Defaults to an empty flow.
+     *
+     * @return An instance of [ViewModelStateContainer] configured with the provided parameters.
+     */
     protected fun viewModelStateContainerOf(
         snapshot: StateContainer.SnapshotStateModel<T>,
         emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
