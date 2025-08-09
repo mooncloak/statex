@@ -103,12 +103,28 @@ public abstract class ViewModel<T : Any>(
     /**
      * Obtains a [com.kodetools.statex.container.MutableStateContainer] instance for this [ViewModelStateContainer].
      *
-     * This is a convenience property to access the internal [com.kodetools.statex.container.MutableStateContainer] [ViewModelStateContainer.delegate]
-     * property. This approach was chosen to allow [com.kodetools.statex.viewmodel.ViewModel] subclasses to be able to
-     * mutate their [com.kodetools.statex.container.StateContainer]s but only expose the read-only API.
+     * This is a convenience property to access the internal [com.kodetools.statex.container.MutableStateContainer]
+     * [ViewModelStateContainer.delegate] property. This approach was chosen to allow
+     * [com.kodetools.statex.viewmodel.ViewModel] subclasses to be able to mutate their
+     * [com.kodetools.statex.container.StateContainer]s but only expose the read-only API publicly.
      */
     protected val <T> ViewModelStateContainer<T>.mutable: MutableStateContainer<T>
         get() = this.delegate
+
+    /**
+     * Obtains a [com.kodetools.statex.container.MutableStateContainer] instance for this [ViewModelStateContainer] and
+     * invokes the potentially mutating function [block] with it.
+     *
+     * This is a convenience function to access the internal [com.kodetools.statex.container.MutableStateContainer]
+     * [ViewModelStateContainer.delegate] property. This approach was chosen to allow
+     * [com.kodetools.statex.viewmodel.ViewModel] subclasses to be able to mutate their
+     * [com.kodetools.statex.container.StateContainer]s but only expose the read-only API publicly.
+     */
+    protected suspend fun <T> ViewModelStateContainer<T>.mutate(
+        block: suspend MutableStateContainer<T>.() -> Unit
+    ) {
+        this.delegate.block()
+    }
 
     /**
      * Creates an instance of [ViewModelStateContainer] with the provided configuration values for state management and
