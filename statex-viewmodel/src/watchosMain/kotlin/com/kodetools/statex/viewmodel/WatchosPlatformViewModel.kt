@@ -7,10 +7,36 @@ import kotlin.coroutines.CoroutineContext
 
 public actual abstract class PlatformViewModel internal actual constructor() {
 
+    private val keyedCloseables = mutableMapOf<String, AutoCloseable>()
+    private val closeables = mutableListOf<AutoCloseable>()
+
     protected actual open val viewModelScope: CoroutineScope =
         object : CoroutineScope {
 
             override val coroutineContext: CoroutineContext
                 get() = SupervisorJob() + Dispatchers.Main
         }
+
+    protected actual open fun onCleared() {
+    }
+
+    public actual fun addCloseable(key: String, closeable: AutoCloseable) {
+        keyedCloseables[key] = closeable
+    }
+
+    public actual fun addCloseable(closeable: AutoCloseable) {
+        closeables.add(closeable)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    public actual fun <T : AutoCloseable> getCloseable(key: String): T? =
+        keyedCloseables[key] as? T
+
+    internal fun clear() {
+        closeables.forEach { it.close() }
+        keyedCloseables.forEach { it.value.close() }
+        closeables.clear()
+        keyedCloseables.clear()
+        onCleared()
+    }
 }

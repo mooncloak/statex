@@ -12,4 +12,12 @@ import kotlinx.coroutines.CoroutineScope
 public expect abstract class PlatformViewModel internal constructor() {
 
     protected open val viewModelScope: CoroutineScope
+
+    protected open fun onCleared()
+
+    public fun addCloseable(key: String, closeable: AutoCloseable)
+
+    public fun addCloseable(closeable: AutoCloseable)
+
+    public fun <T : AutoCloseable> getCloseable(key: String): T?
 }
