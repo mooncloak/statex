@@ -1,14 +1,23 @@
 plugins {
-    kotlin("jvm") version "2.2.0" apply false
-    kotlin("multiplatform") version "2.2.0" apply false
-    kotlin("android") version "2.2.0" apply false
-    kotlin("plugin.serialization") version "2.2.0" apply false
-    id("com.android.library") version "8.2.2" apply false
-    id("com.android.application") version "8.2.2" apply false
-    id("org.jetbrains.compose") version "1.7.3" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0" apply false
-    id("org.jetbrains.dokka")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator")
+    // Kotlin plugins
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+
+    // Android plugins
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.application) apply false
+
+    // Compose plugins
+    alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+
+    // Other plugins
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.binary.compatibility.validator)
+
+    // Custom plugins
     id("statex.variables")
 }
 

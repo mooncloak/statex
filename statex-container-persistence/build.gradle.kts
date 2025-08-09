@@ -18,57 +18,57 @@ kotlin {
             dependencies {
                 api(project(":statex-container"))
 
-                implementation(compose.runtime)
-                implementation(compose.runtimeSaveable)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.runtime.saveable)
 
-                implementation(KotlinX.coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(KotlinX.serialization.core)
+                implementation(libs.kotlinx.serialization.core)
 
-                implementation(RussHWolf.multiplatformSettings.settings)
-                implementation(RussHWolf.multiplatformSettings.serialization)
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.serialization)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val wasmJsMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val appleMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val mingwMain by getting {
             dependencies {
-                implementation(RussHWolf.multiplatformSettings.noArg)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(libs.kotlin.test)
             }
         }
     }

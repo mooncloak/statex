@@ -15,17 +15,17 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(KotlinX.coroutines.core)
-
-                implementation(KotlinX.serialization.core)
+                // Using version catalog
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.core)
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-                implementation("app.cash.turbine:turbine:1.0.0")
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.turbine)
             }
         }
     }

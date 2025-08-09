@@ -17,21 +17,21 @@ kotlin {
             dependencies {
                 api(project(":statex-container"))
 
-                implementation(KotlinX.coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(KotlinX.serialization.core)
+                implementation(libs.kotlinx.serialization.core)
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(libs.kotlin.test)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                api(AndroidX.lifecycle.viewModelKtx)
+                api(libs.androidx.lifecycle.viewmodel.ktx)
             }
         }
 
@@ -40,7 +40,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api(libs.androidx.lifecycle.viewmodel.compose)
             }
         }
 
@@ -49,7 +49,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api(libs.androidx.lifecycle.viewmodel.compose)
             }
         }
 
@@ -58,7 +58,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api(libs.androidx.lifecycle.viewmodel.compose)
             }
         }
 
@@ -67,7 +67,7 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+                api(libs.androidx.lifecycle.viewmodel.compose)
             }
         }
     }
