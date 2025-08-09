@@ -134,6 +134,8 @@ public abstract class ViewModel<T : Any>(
      * state management. Defaults to an empty flow.
      *
      * @return An instance of [ViewModelStateContainer] configured with the provided parameters.
+     *
+     * @see [ViewModelStateContainer]
      */
     protected fun viewModelStateContainerOf(
         initialStateValue: T,
@@ -176,6 +178,8 @@ public abstract class ViewModel<T : Any>(
      * state management. Defaults to an empty flow.
      *
      * @return An instance of [ViewModelStateContainer] configured with the provided parameters.
+     *
+     * @see [ViewModelStateContainer]
      */
     protected fun viewModelStateContainerOf(
         snapshot: StateContainer.SnapshotStateModel<T>,
