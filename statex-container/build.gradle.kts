@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
     id("com.android.library")
     id("maven-publish")
     id("org.jetbrains.dokka")
@@ -24,8 +23,24 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.coroutines.test)
+            }
+        }
+
+        val turbineTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.turbine)
             }
+        }
+
+        val jvmTest by getting {
+            dependsOn(turbineTest)
+        }
+
+        val androidUnitTest by getting {
+            dependsOn(turbineTest)
         }
     }
 }
