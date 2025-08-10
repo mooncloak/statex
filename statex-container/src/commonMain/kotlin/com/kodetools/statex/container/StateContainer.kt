@@ -65,7 +65,10 @@ public interface StateContainer<T> {
     public data class SnapshotStateModel<T> public constructor(
         public val initialStateValue: T,
         public val currentStateValue: T,
-    )
+    ) {
+
+        public companion object
+    }
 
     public companion object
 }
