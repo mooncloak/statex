@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.stateIn
  * @param [sharingStarted] The strategy that controls when sharing is started and stopped. This value is used to
  * construct a [StateFlow] from the [ViewModel.uiStateUpstreamFlow] function and the internal [MutableStateFlow].
  */
-public abstract class ViewModel<T : Any>(
+public abstract class ViewModel<T : Any> public constructor(
     initialStateValue: T,
     private val emitDispatcher: CoroutineDispatcher = Dispatchers.Main,
     private val flowDispatcher: CoroutineDispatcher = emitDispatcher,
