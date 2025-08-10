@@ -1,0 +1,19 @@
+//[statex-container](../../index.md)/[com.kodetools.statex.container](index.md)
+
+# Package-level declarations
+
+## Types
+
+| Name | Summary |
+|---|---|
+| [DefaultMutableStateContainer](-default-mutable-state-container/index.md) | [common]<br>class [DefaultMutableStateContainer](-default-mutable-state-container/index.md)&lt;[T](-default-mutable-state-container/index.md)&gt; : [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](-default-mutable-state-container/index.md)&gt; <br>A default [MutableStateContainer](-mutable-state-container/index.md) implementation. |
+| [MutableStateContainer](-mutable-state-container/index.md) | [common]<br>interface [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](-mutable-state-container/index.md)&gt; : [StateContainer](-state-container/index.md)&lt;[T](-mutable-state-container/index.md)&gt; <br>A [StateContainer](-state-container/index.md) that provides the ability to mutate the wrapped state values. All mutable operations should be considered thread-safe and safe to access concurrently. |
+| [StateContainer](-state-container/index.md) | [common]<br>interface [StateContainer](-state-container/index.md)&lt;[T](-state-container/index.md)&gt;<br>A generic container around StateFlow values. This encapsulates the current, while also retaining the initial value. |
+
+## Functions
+
+| Name | Summary |
+|---|---|
+| [mutableStateContainerOf](mutable-state-container-of.md) | [common]<br>fun &lt;[T](mutable-state-container-of.md)&gt; [mutableStateContainerOf](mutable-state-container-of.md)(initialStateValue: [T](mutable-state-container-of.md), flowCoroutineScope: CoroutineScope, emitDispatcher: CoroutineDispatcher = Dispatchers.Main, flowDispatcher: CoroutineDispatcher = emitDispatcher, sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000), upstreamFlow: () -&gt; Flow&lt;[T](mutable-state-container-of.md)&gt; = { emptyFlow() }): [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](mutable-state-container-of.md)&gt;<br>Creates a [MutableStateContainer](-mutable-state-container/index.md) with the provided [initialStateValue](mutable-state-container-of.md).<br>[common]<br>fun &lt;[T](mutable-state-container-of.md)&gt; [mutableStateContainerOf](mutable-state-container-of.md)(snapshot: [StateContainer.SnapshotStateModel](-state-container/-snapshot-state-model/index.md)&lt;[T](mutable-state-container-of.md)&gt;, flowCoroutineScope: CoroutineScope, emitDispatcher: CoroutineDispatcher = Dispatchers.Main, flowDispatcher: CoroutineDispatcher = emitDispatcher, sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000), upstreamFlow: () -&gt; Flow&lt;[T](mutable-state-container-of.md)&gt; = { emptyFlow() }): [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](mutable-state-container-of.md)&gt;<br>Creates a [MutableStateContainer](-mutable-state-container/index.md) with the provided [snapshot](mutable-state-container-of.md). |
+| [reset](reset.md) | [common]<br>suspend fun &lt;[T](reset.md)&gt; [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](reset.md)&gt;.[reset](reset.md)(initialStateValue: [T](reset.md))<br>Resets the state to the provided [initialStateValue](reset.md). This provides a way to override what the initial value was by providing an [initialStateValue](reset.md) as a parameter. |
+| [update](update.md) | [common]<br>suspend fun &lt;[T](update.md)&gt; [MutableStateContainer](-mutable-state-container/index.md)&lt;[T](update.md)&gt;.[update](update.md)(stateValue: [T](update.md))<br>Updates the [StateContainer.current](-state-container/current.md) value to be the provided [stateValue](update.md). This is a convenience function that delegates to the [MutableStateContainer.update](-mutable-state-container/update.md) by providing a higher-order function that simply returns the provided [stateValue](update.md). |

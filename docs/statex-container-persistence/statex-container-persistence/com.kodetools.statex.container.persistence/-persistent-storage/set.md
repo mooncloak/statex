@@ -1,0 +1,6 @@
+//[statex-container-persistence](../../../index.md)/[com.kodetools.statex.container.persistence](../index.md)/[PersistentStorage](index.md)/[set](set.md)
+
+# set
+
+[common]\
+abstract suspend fun &lt;[T](set.md)&gt; [set](set.md)(key: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), value: [T](set.md), serializersModule: SerializersModule = EmptySerializersModule(), serializer: KSerializer&lt;[T](set.md)&gt;)
