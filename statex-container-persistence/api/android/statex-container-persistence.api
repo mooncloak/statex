@@ -28,13 +28,11 @@ public final class com/kodetools/statex/container/persistence/DefaultPersistable
 	public static final field $stable I
 	public fun <init> (Ljava/lang/Object;Lcom/kodetools/statex/container/persistence/PersistentStorage;Ljava/lang/String;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/modules/SerializersModule;Landroidx/compose/runtime/SnapshotMutationPolicy;Lkotlinx/coroutines/MainCoroutineDispatcher;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getChanged ()Landroidx/compose/runtime/State;
-	public fun getCurrent ()Landroidx/compose/runtime/State;
-	public fun getFlow ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun getInitial ()Landroidx/compose/runtime/State;
+	public fun getCurrent ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getInitial ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun getPolicy ()Landroidx/compose/runtime/SnapshotMutationPolicy;
 	public fun hashCode ()I
-	public fun reset (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun reset (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
 	public fun update (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -87,6 +85,20 @@ public abstract interface class com/kodetools/statex/container/persistence/Seria
 }
 
 public final class com/kodetools/statex/container/persistence/SerialFormatSaver$Companion {
+}
+
+public final class com/kodetools/statex/container/persistence/StateContainerSnapshotStateModelSerializer : kotlinx/serialization/KSerializer {
+	public static final field $stable I
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class com/kodetools/statex/container/persistence/StateContainerSnapshotStateModelSerializerKt {
+	public static final fun serializer (Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel$Companion;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/kodetools/statex/container/persistence/StringFormatSaver : com/kodetools/statex/container/persistence/SerialFormatSaver {

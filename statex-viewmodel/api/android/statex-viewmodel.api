@@ -1,17 +1,50 @@
+public final class com/kodetools/statex/viewmodel/AndroidCreationExtrasKt {
+	public static final fun contains (Landroidx/lifecycle/viewmodel/CreationExtras;Landroidx/lifecycle/viewmodel/CreationExtras$Key;)Z
+	public static final fun createMutableCreationExtras (Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/viewmodel/MutableCreationExtras;
+	public static synthetic fun createMutableCreationExtras$default (Landroidx/lifecycle/viewmodel/CreationExtras;ILjava/lang/Object;)Landroidx/lifecycle/viewmodel/MutableCreationExtras;
+	public static final fun plus (Landroidx/lifecycle/viewmodel/CreationExtras;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/viewmodel/MutableCreationExtras;
+	public static final fun plusAssign (Landroidx/lifecycle/viewmodel/MutableCreationExtras;Landroidx/lifecycle/viewmodel/CreationExtras;)V
+}
+
+public final class com/kodetools/statex/viewmodel/AndroidViewModelProviderKt {
+	public static final fun create (Landroidx/lifecycle/ViewModelProvider$Factory;Lkotlin/reflect/KClass;Landroidx/lifecycle/viewmodel/CreationExtras;)Lcom/kodetools/statex/viewmodel/PlatformViewModel;
+	public static final fun create (Lcom/kodetools/statex/viewmodel/ViewModelProvider$Companion;Landroidx/lifecycle/ViewModelStore;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModelProvider;
+	public static final fun create (Lcom/kodetools/statex/viewmodel/ViewModelProvider$Companion;Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModelProvider;
+	public static final fun get (Landroidx/lifecycle/ViewModelProvider;Ljava/lang/String;Lkotlin/reflect/KClass;)Lcom/kodetools/statex/viewmodel/PlatformViewModel;
+	public static final fun get (Landroidx/lifecycle/ViewModelProvider;Lkotlin/reflect/KClass;)Lcom/kodetools/statex/viewmodel/PlatformViewModel;
+	public static final fun getVIEW_MODEL_KEY (Lcom/kodetools/statex/viewmodel/ViewModelProvider$Companion;)Landroidx/lifecycle/viewmodel/CreationExtras$Key;
+}
+
+public final class com/kodetools/statex/viewmodel/CreationExtrasKt {
+	public static final fun getEmpty (Landroidx/lifecycle/viewmodel/CreationExtras$Companion;)Landroidx/lifecycle/viewmodel/CreationExtras;
+}
+
 public abstract class com/kodetools/statex/viewmodel/PlatformViewModel : androidx/lifecycle/ViewModel {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
 	protected fun getViewModelScope ()Lkotlinx/coroutines/CoroutineScope;
 }
 
 public abstract class com/kodetools/statex/viewmodel/ViewModel : com/kodetools/statex/viewmodel/PlatformViewModel {
 	public static final field Companion Lcom/kodetools/statex/viewmodel/ViewModel$Companion;
-	public fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/MainCoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;)V
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/MainCoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	protected final fun emit (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun emit (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
-	protected fun onInit ()Lkotlinx/coroutines/flow/Flow;
+	public fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected final fun getMutable (Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;)Lcom/kodetools/statex/container/MutableStateContainer;
+	public final fun getUiState ()Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;
+	protected fun uiStateUpstreamFlow ()Lkotlinx/coroutines/flow/Flow;
+	protected final fun viewModelStateContainerOf (Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;Lkotlin/jvm/functions/Function0;)Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;
+	protected final fun viewModelStateContainerOf (Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;Lkotlin/jvm/functions/Function0;)Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;
+	public static synthetic fun viewModelStateContainerOf$default (Lcom/kodetools/statex/viewmodel/ViewModel;Lcom/kodetools/statex/container/StateContainer$SnapshotStateModel;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;
+	public static synthetic fun viewModelStateContainerOf$default (Lcom/kodetools/statex/viewmodel/ViewModel;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/flow/SharingStarted;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;
+	protected final fun withMutable (Lcom/kodetools/statex/viewmodel/ViewModelStateContainer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/kodetools/statex/viewmodel/ViewModel$Companion {
+}
+
+public final class com/kodetools/statex/viewmodel/ViewModelStateContainer : com/kodetools/statex/container/StateContainer {
+	public fun getCurrent ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getInitial ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun snapshot (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
