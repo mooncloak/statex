@@ -27,5 +27,5 @@ public actual inline operator fun CreationExtras.plus(creationExtras: CreationEx
     this.platformPlus(creationExtras)
 
 @Suppress("NOTHING_TO_INLINE")
-public actual inline operator fun MutableCreationExtras.plusAssign(creationExtras: CreationExtras) =
+public actual inline operator fun MutableCreationExtras.plusAssign(creationExtras: CreationExtras): Unit =
     this.platformPlusAssign(creationExtras)
