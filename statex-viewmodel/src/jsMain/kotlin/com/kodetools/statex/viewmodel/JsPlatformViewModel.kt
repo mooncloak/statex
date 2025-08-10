@@ -6,9 +6,9 @@ import kotlinx.coroutines.CoroutineScope
 
 public actual abstract class PlatformViewModel : ViewModel {
 
-    internal actual constructor() : super()
+    public actual constructor() : super()
 
-    internal actual constructor(viewModelScope: CoroutineScope) : super(viewModelScope)
+    public actual constructor(viewModelScope: CoroutineScope) : super(viewModelScope)
 
     protected actual open val viewModelScope: CoroutineScope
         get() = this.platformViewModelScope

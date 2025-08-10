@@ -9,9 +9,9 @@ import kotlinx.coroutines.CoroutineScope
  * Android development. Therefore, the Android implementation of this component inherits from the
  * `androidx.lifecycle.ViewModel` component.
  */
-public expect abstract class PlatformViewModel internal constructor() {
+public expect abstract class PlatformViewModel public constructor() {
 
-    internal constructor(viewModelScope: CoroutineScope)
+    public constructor(viewModelScope: CoroutineScope)
 
     protected open val viewModelScope: CoroutineScope
 

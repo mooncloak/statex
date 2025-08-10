@@ -9,7 +9,7 @@ public actual abstract class PlatformViewModel {
 
     private val coroutineScope: CoroutineScope
 
-    internal actual constructor() : super() {
+    public actual constructor() : super() {
         coroutineScope = object : CoroutineScope {
 
             override val coroutineContext: CoroutineContext
@@ -17,7 +17,7 @@ public actual abstract class PlatformViewModel {
         }
     }
 
-    internal actual constructor(viewModelScope: CoroutineScope) : super() {
+    public actual constructor(viewModelScope: CoroutineScope) : super() {
         coroutineScope = viewModelScope
     }
 
