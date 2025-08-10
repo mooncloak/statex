@@ -1,31 +1,99 @@
 package com.kodetools.statex.viewmodel
 
-import androidx.lifecycle.viewmodel.contains as platformContains
-import androidx.lifecycle.viewmodel.plus as platformPlus
-import androidx.lifecycle.viewmodel.plusAssign as platformPlusAssign
+/**
+ * Key for the elements of [CreationExtras]. [T] represents the type of element associated with
+ * this key.
+ */
+public actual interface CreationExtrasKey<T>
 
-public actual typealias CreationExtras = androidx.lifecycle.viewmodel.CreationExtras
-public actual typealias CreationExtrasKey<T> = androidx.lifecycle.viewmodel.CreationExtras.Key<T>
-public actual typealias CreationExtrasEmpty = androidx.lifecycle.viewmodel.CreationExtras.Empty
+internal actual object CreationExtrasEmpty : CreationExtras() {
+    actual override fun <T> get(key: CreationExtrasKey<T>): T? = null
+}
 
 @PublishedApi
-internal actual inline fun <reified T> newCreationExtrasKey(): CreationExtrasKey<T> =
-    androidx.lifecycle.viewmodel.CreationExtras.Key<T>()
+internal actual inline fun <reified T> newCreationExtrasKey(): CreationExtrasKey<T> = object : CreationExtrasKey<T> {}
 
-public actual typealias MutableCreationExtras = androidx.lifecycle.viewmodel.MutableCreationExtras
+/**
+ * A map-like object holding pairs of [CreationExtras.Key] and [Any], enabling efficient value
+ * retrieval for each key. Each key in [CreationExtras] is unique, storing only one value per key.
+ *
+ * [CreationExtras] is used in [ViewModelProvider.Factory.create] to provide extra information to
+ * the [Factory]. This makes [Factory] implementations stateless, simplifying factory injection by
+ * not requiring all information at construction time.
+ *
+ * This abstract class supports read-only access; use [MutableCreationExtras] for read-write access.
+ */
+public actual abstract class CreationExtras internal constructor() {
 
-@Suppress("NOTHING_TO_INLINE")
-public actual inline fun createMutableCreationExtras(initialExtras: CreationExtras): MutableCreationExtras =
-    androidx.lifecycle.viewmodel.MutableCreationExtras(initialExtras)
+    internal val extras: MutableMap<CreationExtrasKey<*>, Any?> = mutableMapOf()
 
-@Suppress("NOTHING_TO_INLINE")
-public actual inline operator fun CreationExtras.contains(key: CreationExtrasKey<*>): Boolean =
-    this.platformContains(key)
+    /**
+     * Returns the value to which the specified [key] is associated, or null if this
+     * [CreationExtras] contains no mapping for the key.
+     */
+    public actual abstract operator fun <T> get(key: CreationExtrasKey<T>): T?
 
-@Suppress("NOTHING_TO_INLINE")
-public actual inline operator fun CreationExtras.plus(creationExtras: CreationExtras): MutableCreationExtras =
-    this.platformPlus(creationExtras)
+    /** Compares the specified object with this [CreationExtras] for equality. */
+    actual override fun equals(other: Any?): Boolean = other is CreationExtras && extras == other.extras
 
-@Suppress("NOTHING_TO_INLINE")
-public actual inline operator fun MutableCreationExtras.plusAssign(creationExtras: CreationExtras): Unit =
-    this.platformPlusAssign(creationExtras)
+    /** Returns the hash code value for this [CreationExtras]. */
+    actual override fun hashCode(): Int = extras.hashCode()
+
+    /**
+     * Returns a string representation of this [CreationExtras]. The string representation consists
+     * of a list of key-value mappings in the order returned by the [CreationExtras]'s iterator.
+     */
+    actual override fun toString(): String = "CreationExtras(extras=$extras)"
+
+    public actual companion object
+}
+
+/**
+ * A modifiable [CreationExtras] that holds pairs of [CreationExtras.Key] and [Any], allowing
+ * efficient value retrieval for each key.
+ *
+ * Each key in [CreationExtras] is unique, storing only one value per key.
+ *
+ * @see [CreationExtras]
+ */
+public actual class MutableCreationExtras
+/**
+ * Constructs a [MutableCreationExtras] containing the elements of the specified `initialExtras`, in
+ * the order they are returned by the [Map]'s iterator.
+ */
+internal constructor(initialExtras: Map<CreationExtrasKey<*>, Any?>) : CreationExtras() {
+
+    /**
+     * Constructs a [MutableCreationExtras] containing the elements of the specified
+     * [initialExtras], in the order they are returned by the [CreationExtras]'s iterator.
+     */
+    public constructor(initialExtras: CreationExtras = CreationExtrasEmpty) : this(initialExtras.extras)
+
+    init {
+        extras += initialExtras
+    }
+
+    /** Associates the specified [t] with the specified [key] in this [CreationExtras]. */
+    public actual operator fun <T> set(key: CreationExtrasKey<T>, t: T) {
+        extras[key] = t
+    }
+
+    /**
+     * Returns the value to which the specified [key] is associated, or null if this
+     * [CreationExtras] contains no mapping for the key.
+     */
+    @Suppress("UNCHECKED_CAST")
+    public actual override fun <T> get(key: CreationExtrasKey<T>): T? = extras[key] as T?
+}
+
+public actual fun createMutableCreationExtras(initialExtras: CreationExtras): MutableCreationExtras =
+    MutableCreationExtras(initialExtras)
+
+public actual operator fun CreationExtras.contains(key: CreationExtrasKey<*>): Boolean = key in extras
+
+public actual operator fun CreationExtras.plus(creationExtras: CreationExtras): MutableCreationExtras =
+    MutableCreationExtras(initialExtras = extras + creationExtras.extras)
+
+public actual operator fun MutableCreationExtras.plusAssign(creationExtras: CreationExtras) {
+    extras += creationExtras.extras
+}

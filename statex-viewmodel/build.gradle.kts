@@ -64,7 +64,8 @@ kotlin {
                 // Multiplatform ViewModel
                 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html#using-viewmodel-in-common-code
                 // Note: This currently doesn't support all multiplatform targets we support (ex: macos, linux, tvos, windows, etc.).
-                api(libs.androidx.lifecycle.viewmodel.compose)
+                // FIXME: This isn't building on WASM.
+                // api(libs.androidx.lifecycle.viewmodel.compose)
             }
         }
     }
