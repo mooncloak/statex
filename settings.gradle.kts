@@ -32,6 +32,7 @@ plugins {
 
 rootProject.name = "statex"
 
-include(":statex-viewmodel")
 include(":statex-container")
 include(":statex-container-persistence")
+include(":statex-viewmodel")
+include(":statex-viewmodel-compose")
