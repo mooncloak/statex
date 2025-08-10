@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
     id("com.android.library")
     id("maven-publish")
     id("org.jetbrains.dokka")
@@ -18,8 +17,6 @@ kotlin {
                 api(project(":statex-container"))
 
                 implementation(libs.kotlinx.coroutines.core)
-
-                implementation(libs.kotlinx.serialization.core)
             }
         }
 

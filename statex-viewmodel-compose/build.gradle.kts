@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
     id("com.android.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -54,7 +53,6 @@ kotlin {
                 api(project(":statex-viewmodel"))
 
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.serialization.core)
 
                 implementation(compose.runtime)
 
