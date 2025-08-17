@@ -91,12 +91,6 @@ fun MavenPublication.mavenCentralPom() {
                 name.set("mooncloak Team")
                 url.set("https://github.com/mooncloak")
             }
-            developer {
-                id.set("ckeenan")
-                name.set("Chris Keenan")
-                url.set("https://github.com/chRyNaN")
-                roles.set(setOf("Primary statex developer. 💪"))
-            }
         }
 
         scm {
